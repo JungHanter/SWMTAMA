@@ -22,3 +22,6 @@ local.properties
 
 # mac
 *.DS_Store
+
+# xcode
+*.xcuserstate
