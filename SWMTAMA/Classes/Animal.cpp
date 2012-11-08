@@ -167,7 +167,7 @@ void Animal::finishChk(cocos2d::CCNode *node)
 #endif
 }
 
-void Animal::addMotion(MOTION name, short num_of_repeat)
+void Animal::addMotion(MOTION name, short num_of_repeat, bool cleanQueue)
 {
 	MOTIONPACK *pack = new MOTIONPACK;
 
@@ -186,12 +186,17 @@ void Animal::addMotion(MOTION name, short num_of_repeat)
 	pack->name = name;
 	pack->num_of_repeat = num_of_repeat;
 
+    if(cleanQueue)
+    {
+        pBody->stopAllActions();
+        cancelAllMotions();
+    }
 	motionQueue.push(pack);
 }
 
-void Animal::addMotion(MOTIONPACK pack)
+void Animal::addMotion(MOTIONPACK pack, bool cleanQueue)
 {
-	addMotion(pack.name, pack.num_of_repeat);
+	addMotion(pack.name, pack.num_of_repeat, cleanQueue);
 }
 
 void Animal::cancelAllMotions()

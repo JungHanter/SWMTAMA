@@ -49,8 +49,8 @@ protected:
 	virtual void finishChk(cocos2d::CCNode *node);
 
 public:
-	void addMotion(MOTION name, short num_of_repeat);
-	void addMotion(MOTIONPACK pack);
+	void addMotion(MOTION name, short num_of_repeat, bool cleanQueue = false);
+	void addMotion(MOTIONPACK pack, bool cleanQueue = false);
 	void cancelAllMotions();
 	virtual void runActionWithMotion(MOTION motion);
 	
