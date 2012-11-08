@@ -22,7 +22,6 @@ import com.swm.vg.voicetoactions.VoiceRecognizerListener;
 public class RecognitionManager {
 	private VoiceRecognizerListener mRecogListener;
 	private VoiceRecognizerListener mRecogTeachListener;
-	private VoiceRecognizerListener mRecogTeachNameListener;
 	private VoiceRecognizer mRecognizer;
 	private Activity parent;
 	
@@ -48,9 +47,12 @@ public class RecognitionManager {
 		ActionInfo action = PatternMatcher.patternMatch(result, animalList);
 		final int extra = -1;
 		
-		callbackHandler.sendMessage(Message.obtain(callbackHandler,CALLBACK_RECOG_RESULT,
-				action.animalId, action.actionId, Integer.valueOf(extra)));
+		Log.d("Analyze recognition", "who="+action.animalId+"/action="+action.actionId);
+//		callbackHandler.sendMessage(Message.obtain(callbackHandler,CALLBACK_RECOG_RESULT,
+//				action.animalId, action.actionId, Integer.valueOf(extra)));
+		callbackOnVoiceRecognitionResult(action.animalId, action.actionId, -1);
 	}
+	
 	
 	
 	//WITH COCOS2DX METHOD
@@ -87,11 +89,13 @@ public class RecognitionManager {
 				nowMode = MODE_TEACH_ACTION;
 				nowTeachAnimalInfo.set(msg.arg1, msg.arg2);
 				mRecognizer.start();
+				Toast.makeText(parent, "가르칠 말을 말해 주세요.", Toast.LENGTH_SHORT).show();
 				break;
 			case NATIVECALL_TEACH_NAME:
 				nowMode = MODE_TEACH_NAME;
 				nowTeachAnimalInfo.set(msg.arg1, -2);
 				mRecognizer.start();
+				Toast.makeText(parent, "동물의 이름을 말해 주세요.", Toast.LENGTH_SHORT).show();
 				break;
 			case NATIVECALL_TEACH_CONFIRM:
 				boolean isSave = ((Boolean)msg.obj).booleanValue();
@@ -115,7 +119,7 @@ public class RecognitionManager {
 		public void handleMessage(Message msg) {
 			switch(msg.what) {
 			case CALLBACK_RECOG_RESULT:
-				callbackOnVoiceRecognitionResult(msg.arg1, msg.arg2, -1);
+//				callbackOnVoiceRecognitionResult(msg.arg1, msg.arg2, -1);
 //				callbackOnVoiceRecognitionResult(msg.arg1, msg.arg2, ((Integer)msg.obj).intValue());
 				break;
 			case CALLBACK_RECOG_READY:
@@ -136,7 +140,12 @@ public class RecognitionManager {
 					callbackOnTeachingResult(-1);
 					callbackSetLabel("No result");
 				} else {
+					if(animalList.size() <= 0) {
+						Toast.makeText(parent, "동물이 없습니다.", Toast.LENGTH_SHORT).show();
+						return;
+					}
 					if(nowMode == MODE_TEACH_ACTION) {
+						Log.d("Teach Action", "who=" + nowTeachAnimalInfo.animalId + "/action=" + nowTeachAnimalInfo.actionId);
 						new AlertDialog.Builder(parent).setTitle("가르치기 음성 인식 완료")
 							.setMessage("인식된 음성으로 액션 명령을 가르치시겠습니까?")
 							.setPositiveButton("예", new OnClickListener() {
@@ -148,12 +157,13 @@ public class RecognitionManager {
 							}).setNegativeButton("아니요", null).show();
 					} else if (nowMode == MODE_TEACH_NAME) {
 						//TODO
-						final String name = animalList.get(nowTeachAnimalInfo.actionId).getName();;
+						Log.d("Teach Name", "who=" + nowTeachAnimalInfo.animalId);
+						final String name = mData.getAnimalInfo(nowTeachAnimalInfo.animalId).getName();;
 						new AlertDialog.Builder(parent).setTitle("동물 이름 인식 완료")
 							.setMessage("인식된 음성으로 "+name+"의 이름을 저장하시겠습니까?")
 							.setPositiveButton("예", new OnClickListener() {
 								public void onClick(DialogInterface dialog, int which) {
-									mData.getAnimalInfo(nowTeachAnimalInfo.actionId).addVoiceNames(results);
+									mData.getAnimalInfo(nowTeachAnimalInfo.animalId).addVoiceNames(results);
 									
 									Toast.makeText(parent, "저장 완료", Toast.LENGTH_SHORT).show();
 								}
@@ -249,10 +259,10 @@ public class RecognitionManager {
 	}
 	
 	private void makeListener() {
-		mRecogListener = new RecogListener();
-		mRecogTeachListener = new TeachListener();
+		mRecogListener = null;
+		mRecogTeachListener = null;
 	}
-	
+
 	private RecognitionManager(Activity parent) {
 		this.parent = parent;
 		makeListener();
@@ -262,9 +272,6 @@ public class RecognitionManager {
 		animalList = mData.getAnimalList();
 		
 		Log.i("Recognition Manager Init.", "Data Load Done.");
-		
-//		mData = null;
-//		animalList = null;
 	}
 	
 	private static RecognitionManager sharedInstance = null;
@@ -281,6 +288,7 @@ public class RecognitionManager {
 		return (Object)sharedInstance;
 	}
 	
+	
 	/*** Listener ***/
 	private class RecogListener implements VoiceRecognizerListener {
 		@Override
@@ -291,7 +299,6 @@ public class RecognitionManager {
 				callbackHandler.sendMessage(Message.obtain(callbackHandler, CALLBACK_TEST_TEXT, "No result"));
 			} else {
 				Log.d("VoiceRecognitionListener", "onResults - " + results.get(0));
-				callbackSetLabel(results.get(0));
 				callbackHandler.sendMessage(Message.obtain(callbackHandler, CALLBACK_TEST_TEXT, (Object)results.get(0)));
 				analyzeCommunicateResult(results.get(0));
 			}

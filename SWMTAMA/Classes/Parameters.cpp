@@ -37,6 +37,6 @@ Parameters::Parameters(int arg1, int arg2) : cocos2d::CCObject() {
 
 Parameters::Parameters(int arg1, int arg2, int arg3) : cocos2d::CCObject() {
     this->arg1 = arg1;
-    this->arg2 = arg1;
-    this->arg3 = arg1;
+    this->arg2 = arg2;
+    this->arg3 = arg3;
 }

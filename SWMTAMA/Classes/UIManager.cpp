@@ -1,4 +1,5 @@
 #include "UIManager.h"
+#include "InGameScene.h"
 
 using namespace cocos2d;
 
@@ -161,13 +162,6 @@ bool UIManager::loadUI(cocos2d::CCLayer* pLayer, LAYERS layerEnum)
 		sprite->setTag(TEXTBTN_NAME);
 		sprite->setVisible(false);
 		pLayer->addChild(sprite);
-
-        frame	= CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName("question.png");
-        sprite	= CCSprite::spriteWithSpriteFrame(frame);
-        sprite->setAnchorPoint(ccp(0, 0.5f));
-        sprite->setTag(ICON_QUESTION);
-        sprite->setVisible(false);
-        pLayer->addChild(sprite);
             
 		break;
 	}
@@ -223,23 +217,6 @@ void UIManager::frame(CCLayer* pLayer, float dt)
 			pLayer->getChildByTag(ICON_ROPE)->setPosition(eps);
 			theta += 0.25f;
 		}
-        if( pLayer->getChildByTag(ICON_QUESTION)->isVisible())
-        {
-            static float timer = 0.f;
-            int accountKey = 0;
-            int animalKey = pData->getLastPointedAnimal(accountKey);
-            if( animalKey < 0 ) break;
-            Animal* animal = pData->getAnimalByAnimalKey(accountKey, animalKey);
-            CCPoint questionPos= animal->getSprite()->getPosition();
-            questionPos.y += 50;
-            pLayer->getChildByTag(ICON_QUESTION)->setPosition(questionPos);
-            timer += dt;
-            if( timer > 5.f )
-            {
-                timer = 0.f;
-                pLayer->getChildByTag(ICON_QUESTION)->setVisible(false);
-            }
-        }
 		break;
 	}
 }
@@ -251,11 +228,6 @@ void UIManager::setSpeaker(CCLayer* pLayer, UI_INGAME speaker_only)
 	pLayer->getChildByTag(SPEAKER_2)->setVisible(speaker_only == SPEAKER_2);
 	pLayer->getChildByTag(SPEAKER_3)->setVisible(speaker_only == SPEAKER_3);
 	pLayer->getChildByTag(SPEAKER_MUTE)->setVisible(speaker_only == SPEAKER_MUTE);
-}
-
-void setQuestion(cocos2d::CCLayer* pLayer, bool visible)
-{
-    pLayer->getChildByTag(ICON_QUESTION)->setVisible(visible);
 }
 
 void UIManager::TouchesBegan(CCLayer* pLayer, CCSet *pTouches, CCEvent *pEvent)
@@ -274,9 +246,21 @@ void UIManager::TouchesBegan(CCLayer* pLayer, CCSet *pTouches, CCEvent *pEvent)
 			if( CCRect::CCRectContainsPoint( pLayer->getChildByTag(BTN_MULTI_PRACTICE)->boundingBox(), touch->getLocation() ) )
 				pLayer->getChildByTag(BTN_MULTI_PRACTICE)->setScale(1.1f);
 			if( CCRect::CCRectContainsPoint( pLayer->getChildByTag(TEXTBTN_EAT)->boundingBox(), touch->getLocation() ) )
+            {
+                //hanter
 				pLayer->getChildByTag(TEXTBTN_EAT)->setScale(1.1f);
+                int accountKey = 0;
+                int who = pData->getLastPointedAnimal(accountKey);
+                ((InGameScene*)pLayer)->teachSpeeching(who, ACTION_BASIC_EAT);
+            }
 			if( CCRect::CCRectContainsPoint( pLayer->getChildByTag(TEXTBTN_NAME)->boundingBox(), touch->getLocation() ) )
+            {
+                //hanter
 				pLayer->getChildByTag(TEXTBTN_NAME)->setScale(1.1f);
+                int accountKey = 0;
+                int who = pData->getLastPointedAnimal(accountKey);
+                ((InGameScene*)pLayer)->teachNameSpeeching(who);
+            }
 		}
 		break;
 	}
@@ -314,11 +298,16 @@ void UIManager::TouchesEnded(CCLayer* pLayer, CCSet *pTouches, CCEvent *pEvent)
 			if( !CCRect::CCRectContainsPoint( pLayer->getChildByTag(BLACKBOARD)->boundingBox(), touch->getLocation() ) &&
 				pLayer->getChildByTag(BLACKBOARD)->isVisible() )
 			{
+                //hanter
+                ((InGameScene*)pLayer)->stopTeachRecogntion();
+                
 				pLayer->getChildByTag(BLACKBOARD)->setVisible(false);
 				pLayer->getChildByTag(TRAIN_NAME)->setVisible(false);
 				pLayer->getChildByTag(TRAIN_LEVEL)->setVisible(false);
 				pLayer->getChildByTag(TEXTBTN_EAT)->setVisible(false);
 				pLayer->getChildByTag(TEXTBTN_NAME)->setVisible(false);
+                
+                ((InGameScene*)pLayer)->startVoiceRecognition();
 			}
 			if( pLayer->getChildByTag(THINK_CLOUD)->isVisible() &&
 				CCRect::CCRectContainsPoint( pLayer->getChildByTag(THINK_CLOUD)->boundingBox(), touch->getLocation() ) )
@@ -359,6 +348,9 @@ void UIManager::TouchesEnded(CCLayer* pLayer, CCSet *pTouches, CCEvent *pEvent)
 				}
 				if( CCRect::CCRectContainsPoint( pLayer->getChildByTag(ICON_BLACKBOARD)->boundingBox(), touch->getLocation() ) )
 				{
+                    //hanter
+                    ((InGameScene*)pLayer)->stopVoiceRecognition();
+                    
 					((CCLabelTTF*)pLayer->getChildByTag(TRAIN_NAME))->setString(animal->getAnimalInfo().name);
 					((CCLabelTTF*)pLayer->getChildByTag(TRAIN_LEVEL))->setString(animal->getAnimalInfo().level);
 
@@ -367,6 +359,8 @@ void UIManager::TouchesEnded(CCLayer* pLayer, CCSet *pTouches, CCEvent *pEvent)
 					pLayer->getChildByTag(TRAIN_LEVEL)->setVisible(!pLayer->getChildByTag(TRAIN_LEVEL)->isVisible());
 					pLayer->getChildByTag(TEXTBTN_EAT)->setVisible(!pLayer->getChildByTag(TEXTBTN_EAT)->isVisible());
 					pLayer->getChildByTag(TEXTBTN_NAME)->setVisible(!pLayer->getChildByTag(TEXTBTN_NAME)->isVisible());
+                    
+                    ((InGameScene*)pLayer)->startTeachRecogntion();
 				}
 			}
 

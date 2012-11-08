@@ -4,6 +4,7 @@
 
 #include "BasisScene.h"
 #include "Parameters.h"
+#include "ActionList.h"
 #include <jni.h>
 
 #define TAG_INGAMESCENE 100
@@ -23,6 +24,10 @@ public:
 	void frame(float dt);
 	
 	CREATE_FUNC(InGameScene);
+    virtual ~InGameScene() {
+        //hanter
+        stopVoiceRecognition();
+    };
 
 private:
 	virtual void ccTouchesBegan(CCSet *pTouches, CCEvent *pEvent);
@@ -34,7 +39,7 @@ private:
 	bool initBackground(const char *filename, cocos2d::CCSize winSize);
 
 
-    
+//hanter
 /** game <-> voiceRecognition **/
 public:
     void initRecognition();

@@ -160,7 +160,7 @@ public class VoiceRecognizer {
 //			Log.d("Sppech Listener", "onRmsChanged - " + rmsdB);
 			int step = (int)(rmsdB/7);		//소리 크기에 따라 step을 구함. 총 4단계(0~4)
 			if(step>4) step = 4;
-			mListener.onVolumeChanged(step);
+//			mListener.onVolumeChanged(step);
 		}
 
 		// 음성 인식 준비가 되었으면
@@ -209,8 +209,10 @@ public class VoiceRecognizer {
 	
 	
 	public void pause() {
-		if(!bLoopingRecognizer) throw new IllegalArgumentException(
-				"pause/resume methpd only use looping recognizer");
+		if(!bLoopingRecognizer) {
+			if(bRecogUsing) cancelVoiceRecognition();
+			return;
+		}
 		if(!bPause) {
 			bPause = true;
 			if(mRecognizer != null)
@@ -219,8 +221,7 @@ public class VoiceRecognizer {
 	}
 	
 	public void resume() {
-		if(!bLoopingRecognizer) throw new IllegalArgumentException(
-				"pause/resume methpd only use looping recognizer");
+		if(!bLoopingRecognizer) return;
 		if(bPause) {
 			bPause = false;
 			if(mRecognizer != null)

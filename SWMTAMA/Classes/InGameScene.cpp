@@ -45,14 +45,14 @@ bool InGameScene::init()
 
 		accountKey = 0;
 		ANIMALINFO animalInfo;
-		animalInfo.key = 0;
+		animalInfo.key = 1;
 		animalInfo.type = LION;
 		strcpy(animalInfo.level, "0  ");
-		strcpy(animalInfo.name, "애봉이");
+		strcpy(animalInfo.name, "뽀삐");
 		pData->makeDataFromAnimalInfo(accountKey, animalInfo);
 		this->addChild(pData->getAnimalByAnimalKey(accountKey, animalInfo.key)->getSprite());
 
-		animalInfo.key = 1;
+		animalInfo.key = 2;
 		animalInfo.type = ELEPHANT;
 		strcpy(animalInfo.level, "0  ");
 		strcpy(animalInfo.name, "애봉이");
@@ -202,12 +202,13 @@ InGameScene* InGameScene::getGameLayer() {
 }
 
 /*** cpp -> java method call ***/
+//hanter
 void InGameScene::startVoiceRecognition() {
     JniMethodInfo info;
     if(JniHelper::getMethodInfo(info, "com.swm.vg.RecognitionManager", "startVoiceRecognition", "()V"))
     {
         CCLog("JNI--startVoiceRecognition");
-        info.env->CallVoidMethod(recogManager, info.methodID); // 호출합니다.
+        info.env->CallVoidMethod(recogManager, info.methodID);
     }
 }
 
@@ -216,39 +217,88 @@ void InGameScene::stopVoiceRecognition() {
     if(JniHelper::getMethodInfo(info, "com.swm.vg.RecognitionManager", "stopVoiceRecognition", "()V"))
     {
         CCLog("JNI--stopVoiceRecognition");
-        info.env->CallVoidMethod(recogManager, info.methodID); // 호출합니다.
+        info.env->CallVoidMethod(recogManager, info.methodID);
     }
 }
 
 void InGameScene::startTeachRecogntion() {
-    
+    JniMethodInfo info;
+    if(JniHelper::getMethodInfo(info, "com.swm.vg.RecognitionManager", "startTeachRecogntion", "()V"))
+    {
+        CCLog("JNI--startTeachRecogntion");
+        info.env->CallVoidMethod(recogManager, info.methodID);
+    }
+    pUI->setSpeaker(this, SPEAKER_MUTE);
 }
 
 void InGameScene::stopTeachRecogntion() {
-    
+    JniMethodInfo info;
+    if(JniHelper::getMethodInfo(info, "com.swm.vg.RecognitionManager", "stopTeachRecogntion", "()V"))
+    {
+        CCLog("JNI--stopTeachRecogntion");
+        info.env->CallVoidMethod(recogManager, info.methodID);
+    }
+    pUI->setSpeaker(this, SPEAKER_MUTE);
 }
 
 void InGameScene::teachSpeeching(int who, int action) {
-    
+    //hanter important
+    CCLog(CCString::createWithFormat("teach action : who=%d/action=%d", who, action)->getCString());
+    JniMethodInfo info;
+    if(JniHelper::getMethodInfo(info, "com.swm.vg.RecognitionManager", "teachSpeeching", "(II)V"))
+    {
+        CCLog("JNI--teachSpeeching");
+        info.env->CallVoidMethod(recogManager, info.methodID, (jint)who, (jint)action);
+    }
+    pUI->setSpeaker(this, SPEAKER_MUTE);
 }
 
 void InGameScene::teachNameSpeeching(int who) {
-    
+    //hanter important
+    CCLog(CCString::createWithFormat("teach name : who=%d", who)->getCString());
+    JniMethodInfo info;
+    if(JniHelper::getMethodInfo(info, "com.swm.vg.RecognitionManager", "teachNameSpeeching", "(I)V"))
+    {
+        CCLog("JNI--teachNameSpeeching");
+        info.env->CallVoidMethod(recogManager, info.methodID, (jint)who);
+    }
+    pUI->setSpeaker(this, SPEAKER_MUTE);
 }
 
 void InGameScene::teachConfirm(bool isSave) {
-    
+    JniMethodInfo info;
+    if(JniHelper::getMethodInfo(info, "com.swm.vg.RecognitionManager", "teachConfirm", "(Z)V"))
+    {
+        CCLog("JNI--teachConfirm");
+        info.env->CallVoidMethod(recogManager, info.methodID, (jboolean)isSave);
+    }
 }
 
 
 /*** java -> cpp callback function ***/
 void InGameScene::callbackOnVoiceRecognitionResult(CCObject* paramObj) {
+    CCLog("callback -- callbackOnVoiceRecognitionResult");
     Parameters* param = (Parameters*)paramObj;
     int who = param->arg1;
     int action = param->arg2;
     int extra = param->arg3;
+    CCLog(CCString::createWithFormat("communication : who=%d/action=%d", who, action)->getCString());
+    
+    int accountkey = 0;
+    //hanter improtant
+    //who부터 있는지 검사해야함
     
     //    param->release();
+    if(action == ACTION_EXTRA_UNKNOWN) {
+        //question mark
+        
+    } else {
+        //임시로 ACTION_BASIC_EAT 를 EAT로 바꿈 - hanter
+        if(action == ACTION_BASIC_EAT) {
+            CCLog(CCString::createWithFormat("animal action : %d/%d/%d", accountkey, who, action)->getCString());
+            pData->getAnimalByAnimalKey(accountkey, who)->addMotion(EAT, 5);
+        }
+    }
 }
 
 void InGameScene::callbackOnRecognitionReady() {
@@ -309,6 +359,7 @@ extern "C" {
 #endif
     void Java_com_swm_vg_RecognitionManager_callbackOnVoiceRecognitionResult(JNIEnv* env, jobject thisObj, jint who, jint action, jint extra)
     {
+        CCLog(CCString::createWithFormat("natevie commu : who=%d/action=%d", (int)who, (int)action)->getCString());
         InGameScene* gameLayer = InGameScene::getGameLayer();
         if(gameLayer != NULL) {
             gameLayer->runAction(CCCallFuncO::create(gameLayer, callfuncO_selector(InGameScene::callbackOnVoiceRecognitionResult),
