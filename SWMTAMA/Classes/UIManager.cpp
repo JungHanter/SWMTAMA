@@ -162,12 +162,12 @@ bool UIManager::loadUI(cocos2d::CCLayer* pLayer, LAYERS layerEnum)
 		sprite->setVisible(false);
 		pLayer->addChild(sprite);
 
-        frame	= CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName("question.png");
-        sprite	= CCSprite::spriteWithSpriteFrame(frame);
-        sprite->setAnchorPoint(ccp(0, 0.5f));
-        sprite->setTag(ICON_QUESTION);
-        sprite->setVisible(false);
-        pLayer->addChild(sprite);
+//        frame	= CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName("question.png");
+//        sprite	= CCSprite::spriteWithSpriteFrame(frame);
+//        sprite->setAnchorPoint(ccp(0, 0.5f));
+//        sprite->setTag(ICON_QUESTION);
+//        sprite->setVisible(false);
+//        pLayer->addChild(sprite);
             
 		break;
 	}
@@ -223,23 +223,23 @@ void UIManager::frame(CCLayer* pLayer, float dt)
 			pLayer->getChildByTag(ICON_ROPE)->setPosition(eps);
 			theta += 0.25f;
 		}
-        if( pLayer->getChildByTag(ICON_QUESTION)->isVisible())
-        {
-            static float timer = 0.f;
-            int accountKey = 0;
-            int animalKey = pData->getLastPointedAnimal(accountKey);
-            if( animalKey < 0 ) break;
-            Animal* animal = pData->getAnimalByAnimalKey(accountKey, animalKey);
-            CCPoint questionPos= animal->getSprite()->getPosition();
-            questionPos.y += 50;
-            pLayer->getChildByTag(ICON_QUESTION)->setPosition(questionPos);
-            timer += dt;
-            if( timer > 5.f )
-            {
-                timer = 0.f;
-                pLayer->getChildByTag(ICON_QUESTION)->setVisible(false);
-            }
-        }
+        //if( pLayer->getChildByTag(ICON_QUESTION)->isVisible())
+       // {
+//            static float timer = 0.f;
+//            int accountKey = 0;
+//            int animalKey = pData->getLastPointedAnimal(accountKey);
+//            if( animalKey < 0 ) break;
+//            Animal* animal = pData->getAnimalByAnimalKey(accountKey, animalKey);
+//            CCPoint questionPos= animal->getSprite()->getPosition();
+//            questionPos.y += 50;
+//            pLayer->getChildByTag(ICON_QUESTION)->setPosition(questionPos);
+//            timer += dt;
+//            if( timer > 5.f )
+//            {
+//                timer = 0.f;
+//                pLayer->getChildByTag(ICON_QUESTION)->setVisible(false);
+//            }
+      //  }
 		break;
 	}
 }
@@ -251,11 +251,6 @@ void UIManager::setSpeaker(CCLayer* pLayer, UI_INGAME speaker_only)
 	pLayer->getChildByTag(SPEAKER_2)->setVisible(speaker_only == SPEAKER_2);
 	pLayer->getChildByTag(SPEAKER_3)->setVisible(speaker_only == SPEAKER_3);
 	pLayer->getChildByTag(SPEAKER_MUTE)->setVisible(speaker_only == SPEAKER_MUTE);
-}
-
-void setQuestion(cocos2d::CCLayer* pLayer, bool visible)
-{
-    pLayer->getChildByTag(ICON_QUESTION)->setVisible(visible);
 }
 
 void UIManager::TouchesBegan(CCLayer* pLayer, CCSet *pTouches, CCEvent *pEvent)

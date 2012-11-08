@@ -39,7 +39,6 @@ public:
 	void setDataManager(DataManager* pDataManager);
 	void frame(cocos2d::CCLayer* pLayer, float dt);
 	void setSpeaker(cocos2d::CCLayer* pLayer, UI_INGAME speaker_only);
-    void setQuestion(cocos2d::CCLayer* pLayer, bool visible);
     
 public:
 	void TouchesBegan(cocos2d::CCLayer* pLayer, cocos2d::CCSet *pTouches, cocos2d::CCEvent *pEvent);
