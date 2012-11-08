@@ -39,8 +39,9 @@ public class SWMTama extends Cocos2dxActivity{
 	private RecognitionManager mRecogManager = null;
 
 	protected void onCreate(Bundle savedInstanceState){
-		super.onCreate(savedInstanceState);
-		
+        PowerManager pm = (PowerManager)getSystemService(Context.POWER_SERVICE);
+        mWakeLock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, "SWMTama");
+        
 		if(VoiceRecognizer.isSupport(this)) {
 			mRecogManager = RecognitionManager.sharedRecognitionManager(this);
 		} else {
@@ -49,8 +50,7 @@ public class SWMTama extends Cocos2dxActivity{
 			finish();
 		}
 		
-        PowerManager pm = (PowerManager)getSystemService(Context.POWER_SERVICE);
-        mWakeLock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, "SWMTama");
+		super.onCreate(savedInstanceState);
 		
 		nowActivity = this;
 	}

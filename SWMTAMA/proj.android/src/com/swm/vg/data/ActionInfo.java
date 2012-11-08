@@ -1,15 +1,27 @@
 package com.swm.vg.data;
 
 public class ActionInfo {
-	final int animalId;
-	final int actionId;
+	public int animalId;
+	public int actionId;
+	
+	public ActionInfo() {
+		this(-1, -1);
+	}
 	
 	public ActionInfo(int animalId, int actionId) {
 		this.animalId = animalId;
 		this.actionId = actionId;
 	}
 	
-	public int getAnimalId() { return animalId; }
-	public int getActionId() { return actionId; }
+	public void init() {
+		animalId = -1;
+		actionId = -1;
+	}
+	
+	public ActionInfo set(int animalId, int actionId) {
+		this.animalId = animalId;
+		this.actionId = actionId;
+		return this;
+	}
 	
 }

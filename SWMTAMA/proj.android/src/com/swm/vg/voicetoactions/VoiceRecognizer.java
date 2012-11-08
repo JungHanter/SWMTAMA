@@ -157,7 +157,7 @@ public class VoiceRecognizer {
 		// 입력 소리 변경 시
 		@Override
 		public void onRmsChanged(float rmsdB) {
-			Log.d("Sppech Listener", "onRmsChanged - " + rmsdB);
+//			Log.d("Sppech Listener", "onRmsChanged - " + rmsdB);
 			int step = (int)(rmsdB/7);		//소리 크기에 따라 step을 구함. 총 4단계(0~4)
 			if(step>4) step = 4;
 			mListener.onVolumeChanged(step);
