@@ -73,6 +73,11 @@ bool InGameScene::init()
 		debugLabel->setPosition(ccp(WINSIZE_X / 2, WINSIZE_Y - 100));
 		addChild(debugLabel);
 
+        debugLabel2 = CCLabelTTF::create("Test Who", "Arial", 22);
+		debugLabel2->setPosition(ccp(WINSIZE_X / 2, WINSIZE_Y - 150));
+        debugLabel2->setTag(9999);
+		addChild(debugLabel2);
+        
 		istoucheDelegate = false;
 		bRet = true;
         
@@ -96,9 +101,25 @@ void InGameScene::frame(float dt)
 		animal->runActionWithMotion(STAND);
 		animal->getSprite()->setPosition(lastestTouch);
 	}
-	char a[32];
-	sprintf(a, "%d", pData->getPointedAnimal(accountKey));
-//	Debug(a);
+    if( getChildByTag(ICON_QUESTION)->isVisible() )
+    {
+        int accountKey = 0;
+        int animalKey = pData->getLastPointedAnimal(accountKey);
+        if( animalKey != -1 )
+        {
+            static float timer = 0.f;
+            Animal *animal = pData->getAnimalByAnimalKey(accountKey, animalKey);
+            CCPoint questionPos = animal->getSprite()->getPosition();
+            questionPos.y += animal->getSprite()->getContentSize().height;
+            getChildByTag(ICON_QUESTION)->setPosition(questionPos);
+            if( timer > 5.f )
+            {
+                getChildByTag(ICON_QUESTION)->setVisible(false);
+                timer = 0.f;
+            }
+            timer += dt;
+        }
+    }
 	pUI->frame(this, dt);
 }
 
@@ -287,11 +308,12 @@ void InGameScene::callbackOnVoiceRecognitionResult(CCObject* paramObj) {
     int accountkey = 0;
     //hanter improtant
     //who부터 있는지 검사해야함
+    if( who == -1 ) return;
     
     //    param->release();
     if(action == ACTION_EXTRA_UNKNOWN) {
         //question mark
-        
+        pUI->setQuestion(this, who);
     } else {
         //임시로 ACTION_BASIC_EAT 를 EAT로 바꿈 - hanter
         if(action == ACTION_BASIC_EAT) {

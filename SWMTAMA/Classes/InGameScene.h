@@ -17,7 +17,8 @@ class InGameScene : public BasisScene
 	CCLabelTTF *debugLabel;
 	bool istoucheDelegate;
 	cocos2d::CCPoint lastestTouch;
-
+    CCLabelTTF *debugLabel2;
+    
 public:
 	static cocos2d::CCScene* scene();
 	virtual bool init();

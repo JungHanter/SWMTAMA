@@ -15,7 +15,8 @@ enum UI_INGAME { INGAME_START = 10000,
 	ICON_BLACKBOARD,
 	ICON_SWING,
 	ICON_RUNNING,
-	ICON_ROPE, 
+	ICON_ROPE,
+    ICON_QUESTION, 
 	SPEAKER_DEFAULT, 
 	SPEAKER_1,
 	SPEAKER_2,
@@ -37,8 +38,9 @@ public:
 	bool loadUI(cocos2d::CCLayer* pLayer, LAYERS layerEnum);
 	void setDataManager(DataManager* pDataManager);
 	void frame(cocos2d::CCLayer* pLayer, float dt);
-	void setSpeaker(cocos2d::CCLayer* pLayer, UI_INGAME speaker_only);
-    
+    void setSpeaker(cocos2d::CCLayer* pLayer, UI_INGAME speaker_only);
+    void setQuestion(cocos2d::CCLayer* pLayer, int who);
+
 public:
 	void TouchesBegan(cocos2d::CCLayer* pLayer, cocos2d::CCSet *pTouches, cocos2d::CCEvent *pEvent);
 	void TouchesMoved(cocos2d::CCLayer* pLayer, cocos2d::CCSet *pTouches, cocos2d::CCEvent *pEvent);

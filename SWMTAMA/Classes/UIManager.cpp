@@ -10,7 +10,7 @@ UIManager* UIManager::create()
 
 bool UIManager::init()
 {
-	CCSpriteFrameCache::sharedSpriteFrameCache()->addSpriteFramesWithFile("coordinates.plist", "texture.png");
+	CCSpriteFrameCache::sharedSpriteFrameCache()->addSpriteFramesWithFile("UI_default.plist");
 
 	return true;
 }
@@ -133,14 +133,14 @@ bool UIManager::loadUI(cocos2d::CCLayer* pLayer, LAYERS layerEnum)
 		sprite->setVisible(false);
 		pLayer->addChild(sprite);
 
-		label = CCLabelTTF::create(" Name", "HY¿ï¸ªµµB", 60);
+		label = CCLabelTTF::create(" Name", "", 60);
 		label->setAnchorPoint(ccp(0, 0.5f));
 		label->setPosition(ccp(0, WINSIZE_Y*0.9f));
 		label->setTag(TRAIN_NAME);
 		label->setVisible(false);
 		pLayer->addChild(label);
 
-		label = CCLabelTTF::create("LEVEL  ", "HY¿ï¸ªµµB", 36);
+		label = CCLabelTTF::create("LEVEL  ", "", 36);
 		label->setAnchorPoint(ccp(1, 0.5f));
 		label->setPosition(ccp(WINSIZE_X/4, WINSIZE_Y*0.8f));
 		label->setTag(TRAIN_LEVEL);
@@ -162,6 +162,15 @@ bool UIManager::loadUI(cocos2d::CCLayer* pLayer, LAYERS layerEnum)
 		sprite->setTag(TEXTBTN_NAME);
 		sprite->setVisible(false);
 		pLayer->addChild(sprite);
+        
+        frame	= CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName("question.png");
+        sprite	= CCSprite::spriteWithSpriteFrame(frame);
+        sprite->setScale(0.5f);
+        sprite->setAnchorPoint(ccp(1, 0.5f));
+        //sprite->setPosition(ccp(0, WINSIZE_Y*0.63f));
+        sprite->setTag(ICON_QUESTION);
+        sprite->setVisible(false);
+        pLayer->addChild(sprite);
             
 		break;
 	}
@@ -171,6 +180,15 @@ bool UIManager::loadUI(cocos2d::CCLayer* pLayer, LAYERS layerEnum)
 void UIManager::setDataManager(DataManager* pDataManager)
 {
 	pData = pDataManager;
+}
+
+void UIManager::setQuestion(cocos2d::CCLayer *pLayer, int who)
+{
+    int accountKey = 0;
+    pData->setPointedAnimal(accountKey, who);
+//    ((CCLabelTTF*)(pLayer->getChildByTag(9999)))->setString(CCString::createWithFormat("setQuestion : %d is chosen.", who)->getCString());
+    CCLog(CCString::createWithFormat("setQuestion : %d is chosen.", who)->getCString());
+    pLayer->getChildByTag(ICON_QUESTION)->setVisible(true);
 }
 
 void UIManager::frame(CCLayer* pLayer, float dt)
