@@ -27,14 +27,11 @@ import org.cocos2dx.lib.Cocos2dxActivity;
 
 import com.swm.vg.voicetoactions.VoiceRecognizer;
 
-import android.content.Context;
 import android.os.Bundle;
-import android.os.PowerManager;
 import android.util.Log;
 import android.widget.Toast;
 
 public class SWMTama extends Cocos2dxActivity{
-	static private PowerManager.WakeLock mWakeLock;
 	private static SWMTama nowActivity = null;
 	private RecognitionManager mRecogManager = null;
 
@@ -50,8 +47,11 @@ public class SWMTama extends Cocos2dxActivity{
 			finish();
 		}
 		
+<<<<<<< HEAD
 		super.onCreate(savedInstanceState);
 		
+=======
+>>>>>>> parent of b2b4ba1... add screen off guard
 		nowActivity = this;
 	}
 	
@@ -68,14 +68,12 @@ public class SWMTama extends Cocos2dxActivity{
 	@Override
 	protected void onResume() {
 		super.onResume();
-		if(!mWakeLock.isHeld()) mWakeLock.acquire();
 		mRecogManager.resumeRecognitionManager();
 	}
 	
 	@Override
 	protected void onDestroy() {
 		mRecogManager.destoryRecognitionManager();
-		mWakeLock.release();
 		super.onDestroy();
 	}
 }
