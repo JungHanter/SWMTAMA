@@ -22,6 +22,7 @@ bool UIManager::loadUI(cocos2d::CCLayer* pLayer, LAYERS layerEnum)
 	CCSprite		*sprite;
 	CCLabelTTF		*label;
 	CCPoint point;
+    const int UIORDER = 1000;
 
 	int tag;
 	switch(layerEnum)
@@ -31,19 +32,19 @@ bool UIManager::loadUI(cocos2d::CCLayer* pLayer, LAYERS layerEnum)
             sprite	= CCSprite::spriteWithSpriteFrame(frame);
             sprite->setPosition(ccp(BUTTON_OPTION_X, BUTTON_OPTION_Y));
             sprite->setTag(BTN_OPTION);
-            pLayer->addChild(sprite);
+            pLayer->addChild(sprite, UIORDER);
 
             frame	= CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName("friends.png");
             sprite	= CCSprite::spriteWithSpriteFrame(frame);
             sprite->setPosition(ccp(BUTTON_FRIEND_X, BUTTON_FRIEND_Y));
             sprite->setTag(BTN_FRIENDS);
-            pLayer->addChild(sprite);
+            pLayer->addChild(sprite, UIORDER);
 
             frame	= CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName("multi_practice.png");
             sprite	= CCSprite::spriteWithSpriteFrame(frame);
             sprite->setPosition(ccp(BUTTON_MULTI_PRACTICE_X, BUTTON_MULTI_PRACTICE_Y));
             sprite->setTag(BTN_MULTI_PRACTICE);
-            pLayer->addChild(sprite);
+            pLayer->addChild(sprite, UIORDER);
 
             // Blackboard
             frame	= CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName("blackboard.png");
@@ -51,14 +52,14 @@ bool UIManager::loadUI(cocos2d::CCLayer* pLayer, LAYERS layerEnum)
             sprite->setPosition(ccp(sprite->getContentSize().width/2, WINSIZE_Y/2));
             sprite->setTag(BLACKBOARD);
             sprite->setVisible(false);
-            pLayer->addChild(sprite);
+            pLayer->addChild(sprite, UIORDER-50);
 
             frame	= CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName("think.png");
             sprite	= CCSprite::spriteWithSpriteFrame(frame);
             sprite->setPosition(ccp(sprite->getContentSize().width/2, WINSIZE_Y/2));
             sprite->setTag(THINK_CLOUD);
             sprite->setVisible(false);
-            pLayer->addChild(sprite);
+            pLayer->addChild(sprite, UIORDER-100);
 
             frame	= CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName("icon_meat.png");
             sprite	= CCSprite::spriteWithSpriteFrame(frame);
@@ -66,7 +67,7 @@ bool UIManager::loadUI(cocos2d::CCLayer* pLayer, LAYERS layerEnum)
             sprite->setScale(16.f/15);
             sprite->setTag(ICON_MEAT);
             sprite->setVisible(false);
-            pLayer->addChild(sprite);
+            pLayer->addChild(sprite, UIORDER-75);
 
             frame	= CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName("icon_blackboard.png");
             sprite	= CCSprite::spriteWithSpriteFrame(frame);
@@ -74,7 +75,7 @@ bool UIManager::loadUI(cocos2d::CCLayer* pLayer, LAYERS layerEnum)
             sprite->setTag(ICON_BLACKBOARD);
             sprite->setScale(1.6f);
             sprite->setVisible(false);
-            pLayer->addChild(sprite);
+            pLayer->addChild(sprite, UIORDER-75);
 
             frame	= CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName("icon_swing.png");
             sprite	= CCSprite::spriteWithSpriteFrame(frame);
@@ -82,7 +83,7 @@ bool UIManager::loadUI(cocos2d::CCLayer* pLayer, LAYERS layerEnum)
             sprite->setTag(ICON_SWING);
             sprite->setScale(0.8f);
             sprite->setVisible(false);
-            pLayer->addChild(sprite);
+            pLayer->addChild(sprite, UIORDER-75);
 
             frame	= CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName("icon_running.png");
             sprite	= CCSprite::spriteWithSpriteFrame(frame);
@@ -90,7 +91,7 @@ bool UIManager::loadUI(cocos2d::CCLayer* pLayer, LAYERS layerEnum)
             sprite->setTag(ICON_RUNNING);
             sprite->setScale(0.8f);
             sprite->setVisible(false);
-            pLayer->addChild(sprite);
+            pLayer->addChild(sprite, UIORDER-75);
 
             frame	= CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName("icon_rope.png");
             sprite	= CCSprite::spriteWithSpriteFrame(frame);
@@ -98,55 +99,55 @@ bool UIManager::loadUI(cocos2d::CCLayer* pLayer, LAYERS layerEnum)
             sprite->setTag(ICON_ROPE);
             sprite->setScale(0.8f);
             sprite->setVisible(false);
-            pLayer->addChild(sprite);
+            pLayer->addChild(sprite, UIORDER-75);
 
             frame	= CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName("speaker_0.png");
             sprite	= CCSprite::spriteWithSpriteFrame(frame);
             sprite->setPosition(ccp(SPEAKER_X, SPEAKER_Y));
             sprite->setTag(SPEAKER_DEFAULT);
-            pLayer->addChild(sprite);
+            pLayer->addChild(sprite, UIORDER);
 
             frame	= CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName("speaker_1.png");
             sprite	= CCSprite::spriteWithSpriteFrame(frame);
             sprite->setPosition(ccp(SPEAKER_X, SPEAKER_Y));
             sprite->setTag(SPEAKER_1);
             sprite->setVisible(false);
-            pLayer->addChild(sprite);
+            pLayer->addChild(sprite, UIORDER);
 
             frame	= CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName("speaker_2.png");
             sprite	= CCSprite::spriteWithSpriteFrame(frame);
             sprite->setPosition(ccp(SPEAKER_X, SPEAKER_Y));
             sprite->setTag(SPEAKER_2);
             sprite->setVisible(false);
-            pLayer->addChild(sprite);
+            pLayer->addChild(sprite, UIORDER);
 
             frame	= CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName("speaker_3.png");
             sprite	= CCSprite::spriteWithSpriteFrame(frame);
             sprite->setPosition(ccp(SPEAKER_X, SPEAKER_Y));
             sprite->setTag(SPEAKER_3);
             sprite->setVisible(false);
-            pLayer->addChild(sprite);
+            pLayer->addChild(sprite, UIORDER);
 
             frame	= CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName("speaker_x.png");
             sprite	= CCSprite::spriteWithSpriteFrame(frame);
             sprite->setPosition(ccp(SPEAKER_X, SPEAKER_Y));
             sprite->setTag(SPEAKER_MUTE);
             sprite->setVisible(false);
-            pLayer->addChild(sprite);
+            pLayer->addChild(sprite, UIORDER);
 
             label = CCLabelTTF::create(" Name", "", 60);
             label->setAnchorPoint(ccp(0, 0.5f));
             label->setPosition(ccp(20, WINSIZE_Y*0.9f));
             label->setTag(TRAIN_NAME);
             label->setVisible(false);
-            pLayer->addChild(label);
+            pLayer->addChild(label, UIORDER);
 
             label = CCLabelTTF::create("LEVEL  ", "", 36);
             label->setAnchorPoint(ccp(1, 0.5f));
             label->setPosition(ccp(WINSIZE_X/4, WINSIZE_Y*0.8f));
             label->setTag(TRAIN_LEVEL);
             label->setVisible(false);
-            pLayer->addChild(label);
+            pLayer->addChild(label, UIORDER);
             
             frame	= CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName("question.png");
             sprite	= CCSprite::spriteWithSpriteFrame(frame);
@@ -155,13 +156,13 @@ bool UIManager::loadUI(cocos2d::CCLayer* pLayer, LAYERS layerEnum)
             //sprite->setPosition(ccp(0, WINSIZE_Y*0.63f));
             sprite->setTag(ICON_QUESTION);
             sprite->setVisible(false);
-            pLayer->addChild(sprite);
+            pLayer->addChild(sprite, UIORDER-100);
             
             CCMenu *menuRequest = CCMenu::create();
             menuRequest->setPosition(CCPointZero);
             menuRequest->setTag(MENU_TRAIN);
             menuRequest->setVisible(false);
-            pLayer->addChild(menuRequest);
+            pLayer->addChild(menuRequest, UIORDER);
             
             char* trainList[] = {"이름 인지하기", "밥 먹기", "뛰기", "쉬기", "자기", "멈추기", "런닝머신 타기", "줄 넘기", "그네 타기"};
             int tagList[] = {TEXTBTN_NAME, ACTION_BASIC_EAT, ACTION_BASIC_RUN, ACTION_BASIC_REST, ACTION_BASIC_SLEEP, ACTION_BASIC_STOP, ACTION_TRAINING_RUNNING, ACTION_TRAINING_ROPE, ACTION_PLAYING_SWING};
@@ -172,7 +173,7 @@ bool UIManager::loadUI(cocos2d::CCLayer* pLayer, LAYERS layerEnum)
                 item->setAnchorPoint(ccp(0, 0.5f));
                 item->setTag(tagList[i]);
                 item->setPosition(ccp(20, WINSIZE_Y*(0.7f-0.07f*i)));
-                menuRequest->addChild(item);
+                menuRequest->addChild(item, UIORDER);
             }
             
 		break;

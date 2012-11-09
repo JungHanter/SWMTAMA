@@ -296,7 +296,7 @@ void Animal::runActionWithMotion(MOTION motion)
 			sizeTexture.width, 
 			sizeTexture.height));
 	}
-
+    
 	CCAnimate			*animate	= CCAnimate::create(animation);//CCAnimate::create(animates[motion]->animation());
 	CCFiniteTimeAction	*action;
 	CCPoint				direction;

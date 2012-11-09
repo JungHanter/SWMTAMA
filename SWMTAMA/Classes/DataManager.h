@@ -17,7 +17,8 @@ private:
 public:
 	static DataManager* create();
 	void release();
-
+    void frame(cocos2d::CCLayer* pLayer, float dt);
+    
 public:
 	Animal* getAnimalByAnimalKey(int accountKey, int animalKey);
 	map<int, Animal*>* getAnimalsByAccount(int accountKey);
@@ -26,7 +27,8 @@ public:
 	int getPointedAnimal(int accountKey);
 	int getLastPointedAnimal(int accountKey);
 	int findAnimalRectContainsPoint(int accountKey, cocos2d::CCPoint touch);
-
+    void setZOrders(cocos2d::CCLayer *pLayer, float dt);
+    
 public:
 	DataManager();
 };

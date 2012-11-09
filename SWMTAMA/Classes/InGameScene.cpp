@@ -112,7 +112,7 @@ void InGameScene::frame(float dt)
             CCPoint questionPos = animal->getSprite()->getPosition();
             questionPos.y += animal->getSprite()->getContentSize().height;
             getChildByTag(ICON_QUESTION)->setPosition(questionPos);
-            if( timer > 5.f )
+            if( timer > 2.f )
             {
                 getChildByTag(ICON_QUESTION)->setVisible(false);
                 timer = 0.f;
@@ -120,6 +120,7 @@ void InGameScene::frame(float dt)
             timer += dt;
         }
     }
+    pData->frame(this, dt);
     ((CCLabelTTF*)getChildByTag(9999))->setString(CCString::createWithFormat("Last %d", pData->getLastPointedAnimal(0))->getCString());
 	pUI->frame(this, dt);
 }

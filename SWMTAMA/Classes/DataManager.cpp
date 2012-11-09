@@ -25,6 +25,11 @@ void DataManager::release()
 	}
 }
 
+void DataManager::frame(CCLayer *pLayer, float dt)
+{
+    setZOrders(pLayer, dt);
+}
+
 Animal* DataManager::getAnimalByAnimalKey(int accountKey, int animalKey)
 {
 	if( AnimalData.find(accountKey) == AnimalData.end() ) return NULL;
@@ -101,4 +106,19 @@ int DataManager::findAnimalRectContainsPoint(int accountKey, CCPoint touch)
 		}
 	}
 	return -1;
+}
+
+void DataManager::setZOrders(cocos2d::CCLayer *pLayer, float dt)
+{
+    for( map<int, map<int, Animal*>*>::iterator accountIter = AnimalData.begin();
+		accountIter != AnimalData.end(); accountIter++ )
+	{
+		for( map<int, Animal*>::iterator animalIter = accountIter->second->begin();
+			animalIter != accountIter->second->end(); animalIter++ )
+		{
+            int zorder = 800;
+            zorder -= animalIter->second->getSprite()->getPosition().y - animalIter->second->getSprite()->getContentSize().height/2;
+			pLayer->reorderChild(animalIter->second->getSprite(), zorder);
+		}
+	}
 }
