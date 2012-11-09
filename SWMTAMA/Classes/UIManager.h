@@ -21,17 +21,17 @@ enum UI_INGAME { INGAME_START = 10000,
 	SPEAKER_1,
 	SPEAKER_2,
 	SPEAKER_3,
-	SPEAKER_MUTE, 
+	SPEAKER_MUTE,
+    MENU_TRAIN,
+    TEXTBTN_NAME, 
 	TRAIN_NAME,
-	TRAIN_LEVEL, 
-	TEXTBTN_EAT, 
-	TEXTBTN_NAME, INGAME_END };
+	TRAIN_LEVEL, INGAME_END };
 
 class UIManager
 {
 private:
 	DataManager*	pData;
-
+    
 public:
 	static UIManager* create();
 	bool init();
@@ -41,6 +41,9 @@ public:
     void setSpeaker(cocos2d::CCLayer* pLayer, UI_INGAME speaker_only);
     void setQuestion(cocos2d::CCLayer* pLayer, int who);
 
+private:
+    void callMenuTrain(cocos2d::CCObject *sender);
+    
 public:
 	void TouchesBegan(cocos2d::CCLayer* pLayer, cocos2d::CCSet *pTouches, cocos2d::CCEvent *pEvent);
 	void TouchesMoved(cocos2d::CCLayer* pLayer, cocos2d::CCSet *pTouches, cocos2d::CCEvent *pEvent);

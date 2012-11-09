@@ -120,6 +120,7 @@ void InGameScene::frame(float dt)
             timer += dt;
         }
     }
+    ((CCLabelTTF*)getChildByTag(9999))->setString(CCString::createWithFormat("Last %d", pData->getLastPointedAnimal(0))->getCString());
 	pUI->frame(this, dt);
 }
 
@@ -305,7 +306,6 @@ void InGameScene::callbackOnVoiceRecognitionResult(CCObject* paramObj) {
     int extra = param->arg3;
     CCLog(CCString::createWithFormat("communication : who=%d/action=%d", who, action)->getCString());
     
-    int accountkey = 0;
     //hanter improtant
     //who부터 있는지 검사해야함
     if( who == -1 ) return;
@@ -315,11 +315,7 @@ void InGameScene::callbackOnVoiceRecognitionResult(CCObject* paramObj) {
         //question mark
         pUI->setQuestion(this, who);
     } else {
-        //임시로 ACTION_BASIC_EAT 를 EAT로 바꿈 - hanter
-        if(action == ACTION_BASIC_EAT) {
-            CCLog(CCString::createWithFormat("animal action : %d/%d/%d", accountkey, who, action)->getCString());
-            pData->getAnimalByAnimalKey(accountkey, who)->addMotion(EAT, 5);
-        }
+        pData->getAnimalByAnimalKey(accountKey, who)->doAction(action);
     }
 }
 

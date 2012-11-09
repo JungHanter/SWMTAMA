@@ -199,6 +199,77 @@ void Animal::addMotion(MOTIONPACK pack, bool cleanQueue)
 	addMotion(pack.name, pack.num_of_repeat, cleanQueue);
 }
 
+MOTION Animal::getDefaultMotion(int action)
+{
+    MOTION motion = MOTION_END;
+    switch (action) {
+        case ACTION_BASIC_COME: ;   break;
+        case ACTION_BASIC_CURE: ;   break;
+        case ACTION_BASIC_EAT: ;   break;
+        case ACTION_BASIC_REST: ;   break;
+        case ACTION_BASIC_RUN: ;   break;
+        case ACTION_BASIC_SLEEP: ;   break;
+        case ACTION_BASIC_STOP: ;   break;
+        case ACTION_BASIC_WAKE: ;   break;
+        case ACTION_BASIC_POOP: ;   break;
+        case ACTION_TRAINING_CLEANPOOP: ;   break;
+        case ACTION_TRAINING_ROPE: ;   break;
+        case ACTION_TRAINING_RUNNING: ;   break;
+        case ACTION_PLAYING_PLAY: ;   break;
+        case ACTION_PLAYING_SWING: ;   break;
+        case ACTION_EXTRA_DIE: ;   break;
+    }
+}
+
+void Animal::doAction(int action, int num_of_repeat)
+{
+    //pBody->stopAllActions();
+    //cancelAllMotions();
+    
+    switch (action) {
+        case ACTION_BASIC_COME:
+            break;
+        case ACTION_BASIC_CURE:
+            break;
+        case ACTION_BASIC_EAT:
+            addMotion(EAT, num_of_repeat);
+            break;
+        case ACTION_BASIC_REST:
+            addMotion(SIT, num_of_repeat);
+            break;
+        case ACTION_BASIC_RUN:
+            addMotion(RUN_LEFT, num_of_repeat);
+            break;
+        case ACTION_BASIC_SLEEP:
+            addMotion(SLEEP, 10);
+            break;
+        case ACTION_BASIC_STOP:
+            break;
+        case ACTION_BASIC_WAKE:
+            break;
+        case ACTION_BASIC_POOP:
+            break;
+        case ACTION_TRAINING_CLEANPOOP:
+            break;
+        case ACTION_TRAINING_ROPE:
+            addMotion(FUN_ROPE, 5);
+            break;
+        case ACTION_TRAINING_RUNNING:
+            addMotion(FUN_RUNNING, 5);
+            break;
+        case ACTION_PLAYING_PLAY:
+            break;
+        case ACTION_PLAYING_SWING:
+            addMotion(FUN_SWING, 5);
+            break;
+        case ACTION_EXTRA_DIE:
+           break;
+        default:
+            CCLog("Animal::doAction : wrong action input");
+            break;
+    }
+}
+
 void Animal::cancelAllMotions()
 {
 	while( !motionQueue.empty() )

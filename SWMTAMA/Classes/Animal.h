@@ -3,6 +3,7 @@
 #include "GameStd.h"
 #include "cocos2d.h"
 #include <queue>
+#include "ActionList.h"
 using namespace cocos2d;
 using namespace std;
 
@@ -47,10 +48,12 @@ protected:
 	virtual bool makeAnimates() = 0;
 	virtual bool initiate(ANIMALINFO animalInfo);
 	virtual void finishChk(cocos2d::CCNode *node);
-
+    MOTION getDefaultMotion(int action);
+    
 public:
 	void addMotion(MOTION name, short num_of_repeat, bool cleanQueue = false);
 	void addMotion(MOTIONPACK pack, bool cleanQueue = false);
+    void doAction(int action, int num_of_repeat = 1);
 	void cancelAllMotions();
 	virtual void runActionWithMotion(MOTION motion);
 	
