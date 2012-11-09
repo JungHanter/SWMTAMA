@@ -224,7 +224,7 @@ MOTION Animal::getDefaultMotion(int action)
 void Animal::doAction(int action, int num_of_repeat)
 {
     //pBody->stopAllActions();
-    //cancelAllMotions();
+    cancelAllMotions();
     
     switch (action) {
         case ACTION_BASIC_COME:
@@ -232,13 +232,13 @@ void Animal::doAction(int action, int num_of_repeat)
         case ACTION_BASIC_CURE:
             break;
         case ACTION_BASIC_EAT:
-            addMotion(EAT, num_of_repeat);
+            addMotion(EAT, 5);
             break;
         case ACTION_BASIC_REST:
-            addMotion(SIT, num_of_repeat);
+            addMotion(SIT, 5);
             break;
         case ACTION_BASIC_RUN:
-            addMotion(RUN_LEFT, num_of_repeat);
+            addMotion(RUN_LEFT, 5);
             break;
         case ACTION_BASIC_SLEEP:
             addMotion(SLEEP, 10);

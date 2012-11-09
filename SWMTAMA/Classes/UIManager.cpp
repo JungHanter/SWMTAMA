@@ -136,7 +136,7 @@ bool UIManager::loadUI(cocos2d::CCLayer* pLayer, LAYERS layerEnum)
 
             label = CCLabelTTF::create(" Name", "", 60);
             label->setAnchorPoint(ccp(0, 0.5f));
-            label->setPosition(ccp(0, WINSIZE_Y*0.9f));
+            label->setPosition(ccp(20, WINSIZE_Y*0.9f));
             label->setTag(TRAIN_NAME);
             label->setVisible(false);
             pLayer->addChild(label);
