@@ -23,7 +23,9 @@ void Java_org_cocos2dx_lib_Cocos2dxRenderer_nativeInit(JNIEnv*  env, jobject thi
     if (!CCDirector::sharedDirector()->getOpenGLView())
     {
         CCEGLView *view = CCEGLView::sharedOpenGLView();
+
         view->setFrameSize(w, h);
+//        view->setDesignResolutionSize(1280.f,800.f, kResolutionShowAll);
 
         AppDelegate *pAppDelegate = new AppDelegate();
         CCApplication::sharedApplication()->run();

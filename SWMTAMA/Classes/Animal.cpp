@@ -1,8 +1,17 @@
 #include "Animal.h"
 
+Animal::Animal(ANIMALINFO _animalInfo)
+{
+    info.exp = _animalInfo.exp;
+    info.key = _animalInfo.key;
+    info.level = _animalInfo.level;
+    info.type = _animalInfo.type;
+    info.name = new char[strlen(_animalInfo.name)+1];
+    strcpy(info.name, _animalInfo.name);
+}
+
 Animal::Animal(void)
 {
-	;
 }
 
 Animal::~Animal(void)

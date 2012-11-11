@@ -382,8 +382,10 @@ void UIManager::TouchesEnded(CCLayer* pLayer, CCSet *pTouches, CCEvent *pEvent)
                     //hanter
                     ((InGameScene*)pLayer)->stopVoiceRecognition();
                     
+                    char szLevel[8];
+                    sprintf( szLevel, "%d", animal->getAnimalInfo().level );
 					((CCLabelTTF*)pLayer->getChildByTag(TRAIN_NAME))->setString(animal->getAnimalInfo().name);
-					((CCLabelTTF*)pLayer->getChildByTag(TRAIN_LEVEL))->setString(animal->getAnimalInfo().level);
+					((CCLabelTTF*)pLayer->getChildByTag(TRAIN_LEVEL))->setString(szLevel);
 
 					pLayer->getChildByTag(BLACKBOARD)->setVisible(!pLayer->getChildByTag(BLACKBOARD)->isVisible());
 					pLayer->getChildByTag(TRAIN_NAME)->setVisible(!pLayer->getChildByTag(TRAIN_NAME)->isVisible());

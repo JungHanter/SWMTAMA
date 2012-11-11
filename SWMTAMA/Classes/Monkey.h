@@ -4,8 +4,10 @@
 
 class Monkey : public Animal
 {
+private:
+	virtual bool makeAnimates();
+    
 public:
-	Monkey(void);
+	Monkey(ANIMALINFO animalInfo);
 	~Monkey(void);
 };
-

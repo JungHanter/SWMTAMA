@@ -11,6 +11,7 @@ class DataManager
 {
 private:
 	map<int, map<int, Animal*>*> AnimalData;
+    //map<int, int> num_of_Animal;
 	int pointedAnimalKey;
 	int lastPointedAnimalKey;
 

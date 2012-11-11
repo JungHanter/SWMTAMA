@@ -21,10 +21,16 @@ struct ANIMALINFO
 {
 	int				key;
 	ANIMAL_TYPE		type;
-	char			level[32];
+	int             level;
 	int				exp;
-	char			name[32];
-	ANIMALINFO() :  exp(0) {}
+	char*			name;
+	ANIMALINFO(int _key, ANIMAL_TYPE _type, int _level, int _exp, char *_name)
+    : key(_key), type(_type), level(_level), exp(_exp)
+    {
+        name = new char[strlen(_name)+1];
+        strcpy( name, _name);
+    }
+    ANIMALINFO() {}
 };
 
 struct MOTIONPACK
@@ -66,7 +72,8 @@ public:
 	ANIMALINFO getAnimalInfo();
 
 public:
-	Animal(void);
+	Animal(ANIMALINFO _animalInfo);
+    Animal();
 	~Animal(void);
 };
 

@@ -3,6 +3,7 @@
 #include "AppDelegate.h"
 #include "SimpleAudioEngine.h"
 #include "InGameScene.h"
+#include "LoginScene.h"
 
 using namespace CocosDenshion;
 
@@ -22,9 +23,10 @@ bool AppDelegate::applicationDidFinishLaunching()
     // initialize director
     CCDirector *pDirector = CCDirector::sharedDirector();
     pDirector->setOpenGLView(CCEGLView::sharedOpenGLView());
-
+    CCEGLView::sharedOpenGLView()->setDesignResolutionSize(1280.f,800.f, kResolutionShowAll);
+    
     // enable High Resource Mode(2x, such as iphone4) and maintains low resource on other devices.
-//     pDirector->enableRetinaDisplay(true);
+//    pDirector->enableRetinaDisplay(true);
 
     // turn on display FPS
     pDirector->setDisplayStats(true);
@@ -33,7 +35,7 @@ bool AppDelegate::applicationDidFinishLaunching()
     pDirector->setAnimationInterval(1.0 / 60);
 
     // create a scene. it's an autorelease object
-    CCScene *pScene = InGameScene::scene();
+    CCScene *pScene = InGameScene::scene();//LoginScene::scene();
 
     // run
     pDirector->runWithScene(pScene);

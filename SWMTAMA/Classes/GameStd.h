@@ -5,7 +5,7 @@
 #endif
 
 #ifndef WINSIZE_Y
-#define WINSIZE_Y 720
+#define WINSIZE_Y 800
 #endif
 
 #define TILE_X 20

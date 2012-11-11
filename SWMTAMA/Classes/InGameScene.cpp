@@ -44,21 +44,18 @@ bool InGameScene::init()
 
 
 		accountKey = 0;
-		ANIMALINFO animalInfo;
-		animalInfo.key = 1;
-		animalInfo.type = LION;
-		strcpy(animalInfo.level, "0  ");
-		strcpy(animalInfo.name, "뽀삐");
-		pData->makeDataFromAnimalInfo(accountKey, animalInfo);
-		this->addChild(pData->getAnimalByAnimalKey(accountKey, animalInfo.key)->getSprite());
+		ANIMALINFO animalInfo1( 1, LION, 0, 0, "뽀삐" );
+		pData->makeDataFromAnimalInfo(accountKey, animalInfo1);
+		this->addChild(pData->getAnimalByAnimalKey(accountKey, animalInfo1.key)->getSprite());
 
-		animalInfo.key = 2;
-		animalInfo.type = ELEPHANT;
-		strcpy(animalInfo.level, "0  ");
-		strcpy(animalInfo.name, "애봉이");
-		pData->makeDataFromAnimalInfo(accountKey, animalInfo);
-		this->addChild(pData->getAnimalByAnimalKey(accountKey, animalInfo.key)->getSprite());
+        ANIMALINFO animalInfo2( 2, ELEPHANT, 0, 0, "애봉이" );
+		pData->makeDataFromAnimalInfo(accountKey, animalInfo2);
+		this->addChild(pData->getAnimalByAnimalKey(accountKey, animalInfo2.key)->getSprite());
 
+        ANIMALINFO animalInfo3( 3, MONKEY, 0, 0, "CHOCO" );
+		pData->makeDataFromAnimalInfo(accountKey, animalInfo3);
+		this->addChild(pData->getAnimalByAnimalKey(accountKey, animalInfo3.key)->getSprite());
+        
 		schedule(schedule_selector(InGameScene::frame), 1.f/60);
 		
 		this->setTouchEnabled(true);

@@ -60,9 +60,9 @@ void DataManager::makeDataFromAnimalInfo(int accountKey, ANIMALINFO animalInfo)
 		case ELEPHANT:
 			(*pAnimalList)[animalInfo.key] = new Elephant(animalInfo);
 			break;
-		//case MONKEY:
-		//	(*pAnimalList)[animalInfo.key] = new Monkey(animalInfo);
-		//	break;
+		case MONKEY:
+			(*pAnimalList)[animalInfo.key] = new Monkey(animalInfo);
+			break;
 		//case SQUIRREL:
 		//	(*pAnimalList)[animalInfo.key] = new Squirrel(animalInfo);
 		//	break;
@@ -72,7 +72,6 @@ void DataManager::makeDataFromAnimalInfo(int accountKey, ANIMALINFO animalInfo)
 
 void DataManager::setPointedAnimal(int accountKey, int animalKey)
 {
-	// 나중에는 map구조로 바껴야 될 듯..
 	if( animalKey != -1 )
 		lastPointedAnimalKey = animalKey;
 	pointedAnimalKey = animalKey;
@@ -80,7 +79,6 @@ void DataManager::setPointedAnimal(int accountKey, int animalKey)
 
 int DataManager::getPointedAnimal(int accountKey)
 {
-	// 나중에는 map구조로 바껴야 될 듯..
 	return pointedAnimalKey;
 }
 
