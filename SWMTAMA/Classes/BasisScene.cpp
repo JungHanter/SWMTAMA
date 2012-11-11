@@ -39,3 +39,18 @@ NetworkManager* BasisScene::getNetworkManager()
     return pNetwork;
 }
 
+bool BasisScene::initBackground(const char *filename, cocos2d::CCSize winSize)
+{
+	CCSprite*	pBackground		= CCSprite::create(filename);
+    CCSize		sizeBackground	= pBackground->getContentSize();
+    
+	if( !pBackground ) return false;
+    
+	pBackground->setScaleX(GAME_SCALE*WINSIZE_X/sizeBackground.width);
+	pBackground->setScaleY(GAME_SCALE*WINSIZE_Y/sizeBackground.height);
+	pBackground->setPosition(ccp(WINSIZE_X/2, winSize.height/2));
+    
+	this->addChild(pBackground, 0 );
+    
+	return true;
+}

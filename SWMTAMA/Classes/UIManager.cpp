@@ -1,5 +1,6 @@
 #include "UIManager.h"
 #include "InGameScene.h"
+#include "LoginScene.h"
 
 using namespace cocos2d;
 using namespace std;
@@ -12,21 +13,52 @@ UIManager* UIManager::create()
 bool UIManager::init()
 {
 	CCSpriteFrameCache::sharedSpriteFrameCache()->addSpriteFramesWithFile("UI_default.plist");
-
+    CCSpriteFrameCache::sharedSpriteFrameCache()->addSpriteFramesWithFile("LOGIN_default.plist");
 	return true;
 }
 
 bool UIManager::loadUI(cocos2d::CCLayer* pLayer, LAYERS layerEnum)
 {
+    CCMenu          *menuRequest;
 	CCSpriteFrame	*frame;
 	CCSprite		*sprite;
 	CCLabelTTF		*label;
-	CCPoint point;
-    const int UIORDER = 1000;
+	CCPoint         point;
+    CCMenuItemImage *itemImage;
+    const int       UIORDER = 1000;
 
 	int tag;
 	switch(layerEnum)
 	{
+        case LOGIN:
+            frame	= CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName("11624_491f048fdd143.png");
+            sprite	= CCSprite::spriteWithSpriteFrame(frame);
+            sprite->setPosition(ccp(WINSIZE_X*0.75f, WINSIZE_Y*0.4f));
+            sprite->setScaleX(0.5f);
+            sprite->setScaleY(0.3f);
+            sprite->setTag(FRAME_LOGIN_ID);
+            pLayer->addChild(sprite);
+            
+            frame	= CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName("11624_491f048fdd143.png");
+            sprite	= CCSprite::spriteWithSpriteFrame(frame);
+            sprite->setPosition(ccp(WINSIZE_X*0.75f, WINSIZE_Y*0.20f));
+            sprite->setAnchorPoint(ccp(0.5f, 0.5f));
+            sprite->setScaleX(0.5f);
+            sprite->setScaleY(0.3f);
+            sprite->setTag(FRAME_LOGIN_PW);
+            pLayer->addChild(sprite);
+    
+            menuRequest = CCMenu::create();
+            menuRequest->setPosition(CCPointZero);
+            pLayer->addChild(menuRequest);
+            
+            itemImage = CCMenuItemImage::create("House.png", "House.png", pLayer, menu_selector(LoginScene::callTryLogin));
+            itemImage->setPosition(ccp(WINSIZE_X*0.25f, WINSIZE_Y*0.45f));
+            itemImage->setScale(1.9f);
+            itemImage->setTag(BTN_HOUSE);
+            menuRequest->addChild(itemImage, UIORDER);
+            
+            break;
         case INGAME:
             frame	= CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName("option.png");
             sprite	= CCSprite::spriteWithSpriteFrame(frame);
@@ -46,6 +78,12 @@ bool UIManager::loadUI(cocos2d::CCLayer* pLayer, LAYERS layerEnum)
             sprite->setTag(BTN_MULTI_PRACTICE);
             pLayer->addChild(sprite, UIORDER);
 
+            frame	= CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName("create_animal.png");
+            sprite	= CCSprite::spriteWithSpriteFrame(frame);
+            sprite->setPosition(ccp(BUTTON_MULTI_PRACTICE_X, BUTTON_MULTI_PRACTICE_Y));
+            sprite->setTag(BTN_MULTI_PRACTICE);
+            pLayer->addChild(sprite, UIORDER);
+            
             // Blackboard
             frame	= CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName("blackboard.png");
             sprite	= CCSprite::spriteWithSpriteFrame(frame);
@@ -158,7 +196,7 @@ bool UIManager::loadUI(cocos2d::CCLayer* pLayer, LAYERS layerEnum)
             sprite->setVisible(false);
             pLayer->addChild(sprite, UIORDER-100);
             
-            CCMenu *menuRequest = CCMenu::create();
+            menuRequest = CCMenu::create();
             menuRequest->setPosition(CCPointZero);
             menuRequest->setTag(MENU_TRAIN);
             menuRequest->setVisible(false);

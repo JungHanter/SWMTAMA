@@ -35,7 +35,10 @@ public:
 	void onHttpRequestCompleted(cocos2d::CCNode *sender, void *data);
 
 	// Modules
-	void postMessage(const char* url, const char* postData, const char* tag = NULL);
+	void postMessage(const char* url, const char* postData, CCLayer* pLayer, SEL_CallFuncND func, const char* tag = NULL);
+    
+public:
+	static NetworkManager* create();
 
 private:
 	cocos2d::CCLabelTTF* m_labelStatusCode;

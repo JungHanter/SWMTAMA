@@ -1,50 +1,55 @@
 #include "NetworkManager.h"
 #include <string>
+#include "LoginScene.h"
 
 NetworkManager::NetworkManager(void)
 	: m_labelStatusCode(NULL)
 {
-	CCSize winSize = CCDirector::sharedDirector()->getWinSize();
-
-	CCLabelTTF *label = CCLabelTTF::create("Http Request Test", "Arial", 28);
-	label->setPosition(ccp(winSize.width/2, winSize.height-50));
-	addChild(label, 0);
-
-	CCMenu *menuRequest = CCMenu::create();
-    menuRequest->setPosition(CCPointZero);
-    addChild(menuRequest);
-    
-    // Get 
-    CCLabelTTF *labelGet = CCLabelTTF::create("Test Get", "Arial", 22);
-    CCMenuItemLabel *itemGet = CCMenuItemLabel::create(labelGet, this, menu_selector(NetworkManager::onMenuGetTestClicked));
-    itemGet->setPosition(ccp(winSize.width / 2, winSize.height - 100));
-    menuRequest->addChild(itemGet);
-    
-    // Post
-    CCLabelTTF *labelPost = CCLabelTTF::create("Test Post", "Arial", 22);
-    CCMenuItemLabel *itemPost = CCMenuItemLabel::create(labelPost, this, menu_selector(NetworkManager::onMenuPostTestClicked));
-    itemPost->setPosition(ccp(winSize.width / 2, winSize.height - 150));
-    menuRequest->addChild(itemPost);
-    
-    // Post Binary
-    CCLabelTTF *labelPostBinary = CCLabelTTF::create("Test Post Binary", "Arial", 22);
-    CCMenuItemLabel *itemPostBinary = CCMenuItemLabel::create(labelPostBinary, this, menu_selector(NetworkManager::onMenuPostBinaryTestClicked));
-    itemPostBinary->setPosition(ccp(winSize.width / 2, winSize.height - 200));
-    menuRequest->addChild(itemPostBinary);
-    
-    // Response Code Label
-    m_labelStatusCode = CCLabelTTF::create("HTTP Status Code", "Marker Felt", 20);
-    m_labelStatusCode->setPosition(ccp(winSize.width / 2,  winSize.height - 250));
-    addChild(m_labelStatusCode);
-    
-    // Back Menu
-    CCMenuItemFont *itemBack = CCMenuItemFont::create("Back", this, menu_selector(NetworkManager::toExtensionsMainLayer));
-    itemBack->setPosition(ccp(winSize.width - 50, 25));
-    CCMenu *menuBack = CCMenu::create(itemBack, NULL);
-    menuBack->setPosition(CCPointZero);
-    addChild(menuBack);
+//	CCSize winSize = CCDirector::sharedDirector()->getWinSize();
+//
+//	CCLabelTTF *label = CCLabelTTF::create("Http Request Test", "Arial", 28);
+//	label->setPosition(ccp(winSize.width/2, winSize.height-50));
+//	addChild(label, 0);
+//
+//	CCMenu *menuRequest = CCMenu::create();
+//    menuRequest->setPosition(CCPointZero);
+//    addChild(menuRequest);
+//    
+//    // Get 
+//    CCLabelTTF *labelGet = CCLabelTTF::create("Test Get", "Arial", 22);
+//    CCMenuItemLabel *itemGet = CCMenuItemLabel::create(labelGet, this, menu_selector(NetworkManager::onMenuGetTestClicked));
+//    itemGet->setPosition(ccp(winSize.width / 2, winSize.height - 100));
+//    menuRequest->addChild(itemGet);
+//    
+//    // Post
+//    CCLabelTTF *labelPost = CCLabelTTF::create("Test Post", "Arial", 22);
+//    CCMenuItemLabel *itemPost = CCMenuItemLabel::create(labelPost, this, menu_selector(NetworkManager::onMenuPostTestClicked));
+//    itemPost->setPosition(ccp(winSize.width / 2, winSize.height - 150));
+//    menuRequest->addChild(itemPost);
+//    
+//    // Post Binary
+//    CCLabelTTF *labelPostBinary = CCLabelTTF::create("Test Post Binary", "Arial", 22);
+//    CCMenuItemLabel *itemPostBinary = CCMenuItemLabel::create(labelPostBinary, this, menu_selector(NetworkManager::onMenuPostBinaryTestClicked));
+//    itemPostBinary->setPosition(ccp(winSize.width / 2, winSize.height - 200));
+//    menuRequest->addChild(itemPostBinary);
+//    
+//    // Response Code Label
+//    m_labelStatusCode = CCLabelTTF::create("HTTP Status Code", "Marker Felt", 20);
+//    m_labelStatusCode->setPosition(ccp(winSize.width / 2,  winSize.height - 250));
+//    addChild(m_labelStatusCode);
+//    
+//    // Back Menu
+//    CCMenuItemFont *itemBack = CCMenuItemFont::create("Back", this, menu_selector(NetworkManager::toExtensionsMainLayer));
+//    itemBack->setPosition(ccp(winSize.width - 50, 25));
+//    CCMenu *menuBack = CCMenu::create(itemBack, NULL);
+//    menuBack->setPosition(CCPointZero);
+//    addChild(menuBack);
 }
 
+NetworkManager* NetworkManager::create()
+{
+    return new NetworkManager;
+}
 
 NetworkManager::~NetworkManager(void)
 {
@@ -106,13 +111,15 @@ void NetworkManager::onMenuGetTestClicked(cocos2d::CCObject *sender)
     //m_labelStatusCode->setString("waiting...");
 }
 
-void NetworkManager::postMessage(const char* url, const char* postData, const char* tag)
+void NetworkManager::postMessage(const char* url, const char* postData, CCLayer* pLayer, SEL_CallFuncND func, const char* tag)
 {
 	CCHttpRequest* request = new CCHttpRequest();
 	request->setUrl(url);
 	request->setRequestType(CCHttpRequest::kHttpPost);
-	request->setResponseCallback(this, callfuncND_selector(NetworkManager::onHttpRequestCompleted));
-        
+	request->setResponseCallback(pLayer, func);
+    
+    CCLog("NetworkManager::postMessage");
+    
 	// write the post data
 	request->setRequestData(postData, strlen(postData)); 
 	
@@ -133,7 +140,7 @@ void NetworkManager::onMenuPostTestClicked(cocos2d::CCObject *sender)
 		//postMessage(URL_REQUEST_BREED, "accountKey=1234321&mymob=Tamamon1&targetaccount=4321234&targetmob=tamamon2", "URL_REQUEST_BREED");
 		//postMessage(URL_CHECK_BREED, "accountKey=1234321", "URL_CHECK_BREED");
 		//postMessage(URL_ANSWER_BREED, "requester_accountKey=1234321&requestermob=Tamamon1&mymob=tamamon2&accountKey=4321234&result=yes", "URL_ANSWER_BREED");
-		postMessage(URL_RESPOND_BREED, "accountKey=1234321", "URL_RESPOND_BREED");
+		//postMessage(URL_RESPOND_BREED, "accountKey=1234321", "URL_RESPOND_BREED");
     }
     
     //// test 2: set Content-Type
@@ -210,14 +217,13 @@ void NetworkManager::onHttpRequestCompleted(cocos2d::CCNode *sender, void *data)
     // dump data
     std::vector<char> *buffer = response->getResponseData();
 	std::string s = "";
-    printf("Http Test, dump data: ");
+    //printf("Http Test, dump data: ");
     for (unsigned int i = 0; i < buffer->size(); i++)
     {
-        CCLog("%c", (*buffer)[i]);
+//        CCLog("%c", (*buffer)[i]);
 		s += (*buffer)[i];
     }
 	CCLog("%s", s.data() );
-    CCLog("\n");
 }
 
 void NetworkManager::toExtensionsMainLayer(cocos2d::CCObject *sender)

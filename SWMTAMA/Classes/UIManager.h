@@ -5,7 +5,14 @@
 #include "Animal.h"
 #include "DataManager.h"
 
-enum UI_INGAME { INGAME_START = 10000, 
+enum UI_LOGIN { LOGIN_START = 10000,
+    BTN_HOUSE,
+    FRAME_LOGIN_ID,
+    FRAME_LOGIN_PW,
+    TEXT_LOGIN_ID,
+    TEXT_LOGIN_PW, LOGIN_END };
+
+enum UI_INGAME { INGAME_START = 20000,
 	BTN_OPTION, 
 	BTN_FRIENDS, 
 	BTN_MULTI_PRACTICE, 
