@@ -37,10 +37,8 @@ private:
 
 private:
 	bool initTerrain(const char *filename, cocos2d::CCSize winSize);
+	bool initBackground(const char *filename, cocos2d::CCSize winSize);
 
-private:
-    void onHttpRequestCompleted(cocos2d::CCNode *sender, void *data);
-    
 //hanter
 /** game <-> voiceRecognition **/
 public:

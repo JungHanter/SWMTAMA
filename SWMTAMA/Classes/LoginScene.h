@@ -9,31 +9,19 @@
 #define TAG_LOGINSCENE 101
 #define TAG_LOGINLAYER LOGIN
 
-enum LOGIN_INPUT { LOGIN_TF_ID=100, LOGIN_TF_PW };
-
 class LoginScene : public BasisScene, public CCTextFieldDelegate
 {
 private:
     cocos2d::CCLabelTTF *userID;
-    cocos2d::CCLabelTTF *userPW;
-    
-    CCTextFieldTTF *tfID;
-    CCTextFieldTTF *tfPW;
+    CCTextFieldTTF *textField;
 public:
 	static cocos2d::CCScene* scene();
 	virtual bool init();
     CREATE_FUNC(LoginScene);
     void frame(float dt);
     
-    void inputID();
-    void inputPW();
+    void testKeyboard();
     void testKeyboardResponse(float f);
-
-public:
-    virtual void onHttpRequestCompleted(cocos2d::CCNode *sender, void *data);
-    
-public:
-    void callTryLogin(cocos2d::CCObject *sender);
     
 private:
     virtual void ccTouchesBegan(cocos2d::CCSet *pTouches, cocos2d::CCEvent *pEvent);

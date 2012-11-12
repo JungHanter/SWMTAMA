@@ -14,9 +14,6 @@ protected:
 	UIManager*			pUI;
 	NetworkManager*		pNetwork;
 
-protected:
-    virtual void onHttpRequestCompleted(cocos2d::CCNode *sender, void *data) {}
-    
 public:
     void setDataManager(DataManager *_pData);
     void setUIManager(UIManager *_pUI);
@@ -25,6 +22,5 @@ public:
     DataManager* getDataManager();
     UIManager* getUIManager();
     NetworkManager* getNetworkManager();
-    bool initBackground(const char *filename, cocos2d::CCSize winSize);
 };
 

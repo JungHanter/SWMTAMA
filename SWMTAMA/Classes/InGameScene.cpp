@@ -52,7 +52,7 @@ bool InGameScene::init()
 		pData->makeDataFromAnimalInfo(accountKey, animalInfo2);
 		this->addChild(pData->getAnimalByAnimalKey(accountKey, animalInfo2.key)->getSprite());
 
-        ANIMALINFO animalInfo3( 3, MONKEY, 0, 0, "초코" );
+        ANIMALINFO animalInfo3( 3, MONKEY, 0, 0, "CHOCO" );
 		pData->makeDataFromAnimalInfo(accountKey, animalInfo3);
 		this->addChild(pData->getAnimalByAnimalKey(accountKey, animalInfo3.key)->getSprite());
         
@@ -173,45 +173,20 @@ bool InGameScene::initTerrain(const char *filename, cocos2d::CCSize winSize)
 	return true;
 }
 
-void InGameScene::onHttpRequestCompleted(cocos2d::CCNode *sender, void *data)
+bool InGameScene::initBackground(const char *filename, cocos2d::CCSize winSize)
 {
-    CCHttpResponse *response = (CCHttpResponse*)data;
-    
-    if (!response)
-    {
-        return;
-    }
-    
-    // You can get original request type from: response->request->reqType
-    if (0 != strlen(response->getHttpRequest()->getTag()))
-    {
-        CCLog("%s completed", response->getHttpRequest()->getTag());
-    }
-    
-    int statusCode = response->getResponseCode();
-    char statusString[64] = {};
-    sprintf(statusString, "HTTP Status Code: %d, tag = %s", statusCode, response->getHttpRequest()->getTag());
-    //m_labelStatusCode->setString(statusString);
-    CCLog("response code: %d", statusCode);
-    
-    if (!response->isSucceed())
-    {
-        CCLog("response failed");
-        CCLog("error buffer: %s", response->getErrorBuffer());
-        return;
-    }
-    
-    // dump data
-    std::vector<char> *buffer = response->getResponseData();
-	std::string s = "";
-    printf("Http Test, dump data: ");
-    for (unsigned int i = 0; i < buffer->size(); i++)
-    {
-        CCLog("%c", (*buffer)[i]);
-		s += (*buffer)[i];
-    }
-	CCLog("%s", s.data() );
-    CCLog("\n");
+	CCSprite*	pBackground		= CCSprite::create(filename);
+    CCSize		sizeBackground	= pBackground->getContentSize();
+
+	if( !pBackground ) return false;
+
+	pBackground->setScaleX(GAME_SCALE*WINSIZE_X/sizeBackground.width);
+	pBackground->setScaleY(GAME_SCALE*WINSIZE_Y/sizeBackground.height);
+	pBackground->setPosition(ccp(WINSIZE_X/2, winSize.height/2));
+
+	this->addChild(pBackground, 0 );
+
+	return true;
 }
 
 void InGameScene::Debug(const char *string)
