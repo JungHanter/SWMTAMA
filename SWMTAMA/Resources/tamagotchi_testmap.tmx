@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="isometric" width="20" height="20" tilewidth="64" tileheight="32">
+ <tileset firstgid="1" name="iso-64x64-outside" tilewidth="64" tileheight="32">
+  <image source="iso-64x64-outside.png" width="640" height="1024"/>
+ </tileset>
+ <layer name="background" width="20" height="20">
+  <data encoding="base64" compression="zlib">
+   eJzjZWBg4AZiXirR1DSLl8pmjbpv1H2j7ht136j7qEcDAMcmEsE=
+  </data>
+ </layer>
+ <objectgroup name="Object Layer 1" width="20" height="20"/>
+ <layer name="object" width="20" height="20">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgeQAiKqW0mVQEjtQ2kHaC636lkJq3d9YsG5rOQGe/ofuWnQvpBN1OSimkS5j5lPGZKELBPHk0e5j5dLPrEoWJKOMyUg4prosnD3GeOJC7GCMGKUDEdND2yUL4GlDZGk8fmPgWomDaUNkNTow7lG+FwvzkWcS2omCkOPYZQcRsS4tUEqtaejLQAACSVBuQ=
+  </data>
+ </layer>
+</map>
