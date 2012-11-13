@@ -52,7 +52,7 @@ bool InGameScene::init()
 		pData->makeDataFromAnimalInfo(accountKey, animalInfo2);
 		this->addChild(pData->getAnimalByAnimalKey(accountKey, animalInfo2.key)->getSprite());
 
-        ANIMALINFO animalInfo3( 3, MONKEY, 0, 0, "CHOCO" );
+        ANIMALINFO animalInfo3( 3, MONKEY, 0, 0, "초코" );
 		pData->makeDataFromAnimalInfo(accountKey, animalInfo3);
 		this->addChild(pData->getAnimalByAnimalKey(accountKey, animalInfo3.key)->getSprite());
         
@@ -74,6 +74,9 @@ bool InGameScene::init()
 		debugLabel2->setPosition(ccp(WINSIZE_X / 2, WINSIZE_Y - 150));
         debugLabel2->setTag(9999);
 		addChild(debugLabel2);
+        
+        label_create_animal = (CCLabelTTF*)getChildByTag(CREATE_LABEL_NAME);
+        tf_create_animal = (CCTextFieldTTF*)getChildByTag(CREATE_TF_NAME);
         
 		istoucheDelegate = false;
 		bRet = true;
@@ -147,11 +150,8 @@ void InGameScene::ccTouchesMoved(CCSet *pTouches, CCEvent *pEvent)
 void InGameScene::ccTouchesEnded(CCSet *pTouches, CCEvent *pEvent)
 {
 	istoucheDelegate = false;
-	for( CCSetIterator it = pTouches->begin(); it != pTouches->end(); ++it)
-	{
-		CCTouch *touch = static_cast<CCTouch*>(*it);
-		lastestTouch = touch->getLocation();
-	}
+    CCTouch *touch = static_cast<CCTouch*>(pTouches->anyObject());
+
 	pData->setPointedAnimal( accountKey, -1 );
 	pUI->TouchesEnded(this, pTouches, pEvent);
 
@@ -173,20 +173,75 @@ bool InGameScene::initTerrain(const char *filename, cocos2d::CCSize winSize)
 	return true;
 }
 
-bool InGameScene::initBackground(const char *filename, cocos2d::CCSize winSize)
+void InGameScene::onHttpRequestCompleted(cocos2d::CCNode *sender, void *data)
 {
-	CCSprite*	pBackground		= CCSprite::create(filename);
-    CCSize		sizeBackground	= pBackground->getContentSize();
+    CCHttpResponse *response = (CCHttpResponse*)data;
+    
+    if (!response)
+    {
+        return;
+    }
+    
+    // You can get original request type from: response->request->reqType
+    if (0 != strlen(response->getHttpRequest()->getTag()))
+    {
+        CCLog("%s completed", response->getHttpRequest()->getTag());
+    }
+    
+    int statusCode = response->getResponseCode();
+    char statusString[64] = {};
+    sprintf(statusString, "HTTP Status Code: %d, tag = %s", statusCode, response->getHttpRequest()->getTag());
+    //m_labelStatusCode->setString(statusString);
+    CCLog("response code: %d", statusCode);
+    
+    if (!response->isSucceed())
+    {
+        CCLog("response failed");
+        CCLog("error buffer: %s", response->getErrorBuffer());
+        return;
+    }
+    
+    // dump data
+    std::vector<char> *buffer = response->getResponseData();
+	std::string s = "";
+    printf("Http Test, dump data: ");
+    for (unsigned int i = 0; i < buffer->size(); i++)
+    {
+        CCLog("%c", (*buffer)[i]);
+		s += (*buffer)[i];
+    }
+	CCLog("%s", s.data() );
+    CCLog("\n");
+}
 
-	if( !pBackground ) return false;
+bool InGameScene::onTextFieldAttachWithIME(CCTextFieldTTF* sender)
+{
+    return false;
+}
 
-	pBackground->setScaleX(GAME_SCALE*WINSIZE_X/sizeBackground.width);
-	pBackground->setScaleY(GAME_SCALE*WINSIZE_Y/sizeBackground.height);
-	pBackground->setPosition(ccp(WINSIZE_X/2, winSize.height/2));
+bool InGameScene::onTextFieldDetachWithIME(CCTextFieldTTF * sender)
+{
+    return false;
+}
 
-	this->addChild(pBackground, 0 );
+bool InGameScene::onTextFieldDeleteBackward(CCTextFieldTTF * pSender, const char * delText, int nLen)
+{
+    
+    return false;
+}
 
-	return true;
+bool InGameScene::onTextFieldInsertText(CCTextFieldTTF* sender, const char* text, int nLen)
+{
+    switch (sender->getTag()) {
+        case CREATE_TF_NAME:
+            if( strcmp(text,"\n") == 0 )
+                label_create_animal->setString("ID");
+            else
+                label_create_animal->setString(text);
+            break;
+    }
+    
+    return true;
 }
 
 void InGameScene::Debug(const char *string)

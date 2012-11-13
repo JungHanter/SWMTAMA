@@ -2,7 +2,6 @@
 
 Animal::Animal(ANIMALINFO _animalInfo)
 {
-    info.exp = _animalInfo.exp;
     info.key = _animalInfo.key;
     info.level = _animalInfo.level;
     info.type = _animalInfo.type;
@@ -370,6 +369,111 @@ void Animal::runActionWithMotion(MOTION motion)
 	pBody->runAction(action);
 }
 
+void Animal::addStatus(STATUS_TYPE type, int value)
+{
+    switch (type) {
+        case STATUS_EXP:
+            info.status.exp += value;
+            if( info.status.exp > 100 || info.status.exp < 0 ) info.status.exp -= value;
+            break;
+            
+        case STATUS_FULLNESS:
+            info.status.fullness += value;
+            if( info.status.fullness > 100 || info.status.fullness < 0 ) info.status.fullness -= value;
+            break;
+            
+        case STATUS_HEALTH:
+            info.status.health += value;
+            if( info.status.health > 100 || info.status.health < 0 ) info.status.health -= value;
+            break;
+            
+        case STATUS_JOY:
+            info.status.joy += value;
+            if( info.status.joy > 100 || info.status.joy < 0 ) info.status.joy -= value;
+            break;
+            
+        case STATUS_POOP:
+            info.status.poop += value;
+            if( info.status.poop > 100 || info.status.poop < 0 ) info.status.poop -= value;
+            break;
+            
+        case STATUS_SLEEP:
+            info.status.sleep += value;
+            if( info.status.sleep > 100 || info.status.sleep < 0 ) info.status.sleep -= value;
+            break;
+    }
+}
+
+void Animal::setStatus(STATUS_TYPE type, int value)
+{
+    if( value > 100 || value < 0 ) return;
+    switch (type) {
+        case STATUS_EXP:
+            info.status.exp = value;
+            break;
+            
+        case STATUS_FULLNESS:
+            info.status.fullness = value;
+            break;
+            
+        case STATUS_HEALTH:
+            info.status.health = value;
+            break;
+            
+        case STATUS_JOY:
+            info.status.joy = value;
+            break;
+            
+        case STATUS_POOP:
+            info.status.poop = value;
+            break;
+            
+        case STATUS_SLEEP:
+            info.status.sleep = value;
+            break;
+    }
+}
+
+int Animal::getStatus(STATUS_TYPE type)
+{
+    switch (type) {
+        case STATUS_EXP:
+            return info.status.exp;
+            
+        case STATUS_FULLNESS:
+            return info.status.fullness;
+            
+        case STATUS_HEALTH:
+            return info.status.health;
+            
+        case STATUS_JOY:
+            return info.status.joy;
+            
+        case STATUS_POOP:
+            return info.status.poop;
+            
+        case STATUS_SLEEP:
+            return info.status.sleep;
+    }
+    
+    return -1;
+}
+
+STATUSINFO Animal::getStatus()
+{
+    return info.status;
+}
+
+
+void Animal::frame(float dt)
+{
+    if( info.status.exp == 100 )
+    {
+        info.level++;
+        info.status.exp = 0;
+    }
+}
+
 CCSprite* Animal::getSprite()
 {
 	return pBody;
@@ -380,10 +484,6 @@ void Animal::setSprite(cocos2d::CCSprite *pBody)
 	this->pBody = pBody;
 }
 
-void Animal::gainExp(unsigned int exp)
-{
-	info.exp += exp;
-}
 
 MOTION Animal::getMotionState()
 {

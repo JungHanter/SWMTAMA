@@ -11,8 +11,12 @@
 #define TAG_INGAMELAYER INGAME
 
 
-class InGameScene : public BasisScene
+class InGameScene : public BasisScene, public CCTextFieldDelegate
 {
+private:
+    cocos2d::CCLabelTTF *label_create_animal;
+    CCTextFieldTTF *tf_create_animal;
+    
 	int accountKey;
 	CCLabelTTF *debugLabel;
 	bool istoucheDelegate;
@@ -37,8 +41,10 @@ private:
 
 private:
 	bool initTerrain(const char *filename, cocos2d::CCSize winSize);
-	bool initBackground(const char *filename, cocos2d::CCSize winSize);
-
+    
+private:
+    void onHttpRequestCompleted(cocos2d::CCNode *sender, void *data);
+    
 //hanter
 /** game <-> voiceRecognition **/
 public:
@@ -72,6 +78,11 @@ private:
 /** end of game<->voiceRecognition **/
     
     
+public:
+    virtual bool onTextFieldAttachWithIME(CCTextFieldTTF* sender);
+    virtual bool onTextFieldDetachWithIME(CCTextFieldTTF * sender);
+    virtual bool onTextFieldDeleteBackward(CCTextFieldTTF * pSender, const char * delText, int nLen);
+    virtual bool onTextFieldInsertText(CCTextFieldTTF* sender, const char* text, int nLen);
     
 	//Temporary
 private:

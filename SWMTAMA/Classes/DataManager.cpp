@@ -28,6 +28,13 @@ void DataManager::release()
 void DataManager::frame(CCLayer *pLayer, float dt)
 {
     setZOrders(pLayer, dt);
+    int accountKey = 0;
+    map<int, Animal*> *animals = getAnimalsByAccount(accountKey);
+    for( map<int, Animal*>::iterator animalIter = animals->begin();
+        animalIter != animals->end(); animalIter++ )
+    {
+        animalIter->second->frame(dt);
+    }
 }
 
 Animal* DataManager::getAnimalByAnimalKey(int accountKey, int animalKey)
@@ -120,3 +127,10 @@ void DataManager::setZOrders(cocos2d::CCLayer *pLayer, float dt)
 		}
 	}
 }
+
+int DataManager::getNewAnimalKey(int accountKey)
+{
+    if( AnimalData.find(accountKey) == AnimalData.end() ) return -1;
+    return AnimalData[accountKey]->size() + 1;
+}
+

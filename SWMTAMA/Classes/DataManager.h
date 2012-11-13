@@ -29,7 +29,7 @@ public:
 	int getLastPointedAnimal(int accountKey);
 	int findAnimalRectContainsPoint(int accountKey, cocos2d::CCPoint touch);
     void setZOrders(cocos2d::CCLayer *pLayer, float dt);
-    
+    int getNewAnimalKey(int accountKey);
 public:
 	DataManager();
 };

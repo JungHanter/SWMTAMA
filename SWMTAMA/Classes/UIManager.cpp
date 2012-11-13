@@ -1,5 +1,6 @@
 #include "UIManager.h"
 #include "InGameScene.h"
+#include "LoginScene.h"
 
 using namespace cocos2d;
 using namespace std;
@@ -12,22 +13,57 @@ UIManager* UIManager::create()
 bool UIManager::init()
 {
 	CCSpriteFrameCache::sharedSpriteFrameCache()->addSpriteFramesWithFile("UI_default.plist");
-
+    CCSpriteFrameCache::sharedSpriteFrameCache()->addSpriteFramesWithFile("LOGIN_default.plist");
 	return true;
 }
 
 bool UIManager::loadUI(cocos2d::CCLayer* pLayer, LAYERS layerEnum)
 {
+    CCMenu          *menuRequest;
 	CCSpriteFrame	*frame;
 	CCSprite		*sprite;
 	CCLabelTTF		*label;
-	CCPoint point;
-    const int UIORDER = 1000;
+	CCPoint         point;
+    CCMenuItemImage *itemImage;
+    const int       UIORDER = 1000;
 
 	int tag;
 	switch(layerEnum)
 	{
+        case LOGIN:
+            frame	= CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName("11624_491f048fdd143.png");
+            sprite	= CCSprite::spriteWithSpriteFrame(frame);
+            sprite->setPosition(ccp(WINSIZE_X*0.75f, WINSIZE_Y*0.4f));
+            sprite->setScaleX(0.5f);
+            sprite->setScaleY(0.3f);
+            sprite->setTag(FRAME_LOGIN_ID);
+            pLayer->addChild(sprite);
+            
+            frame	= CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName("11624_491f048fdd143.png");
+            sprite	= CCSprite::spriteWithSpriteFrame(frame);
+            sprite->setPosition(ccp(WINSIZE_X*0.75f, WINSIZE_Y*0.20f));
+            sprite->setAnchorPoint(ccp(0.5f, 0.5f));
+            sprite->setScaleX(0.5f);
+            sprite->setScaleY(0.3f);
+            sprite->setTag(FRAME_LOGIN_PW);
+            pLayer->addChild(sprite);
+    
+            menuRequest = CCMenu::create();
+            menuRequest->setPosition(CCPointZero);
+            pLayer->addChild(menuRequest);
+            
+            itemImage = CCMenuItemImage::create("House.png", "House.png", pLayer, menu_selector(LoginScene::callTryLogin));
+            itemImage->setPosition(ccp(WINSIZE_X*0.25f, WINSIZE_Y*0.45f));
+            itemImage->setScale(1.9f);
+            itemImage->setTag(BTN_HOUSE);
+            menuRequest->addChild(itemImage, UIORDER);
+            
+            break;
         case INGAME:
+            // ***
+            create_animal_type = LION;
+            
+            CCLog("text1");
             frame	= CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName("option.png");
             sprite	= CCSprite::spriteWithSpriteFrame(frame);
             sprite->setPosition(ccp(BUTTON_OPTION_X, BUTTON_OPTION_Y));
@@ -45,12 +81,18 @@ bool UIManager::loadUI(cocos2d::CCLayer* pLayer, LAYERS layerEnum)
             sprite->setPosition(ccp(BUTTON_MULTI_PRACTICE_X, BUTTON_MULTI_PRACTICE_Y));
             sprite->setTag(BTN_MULTI_PRACTICE);
             pLayer->addChild(sprite, UIORDER);
-
+            
+            frame	= CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName("plus.png");
+            sprite	= CCSprite::spriteWithSpriteFrame(frame);
+            sprite->setPosition(ccp(BUTTON_CREATE_ANIMAL_X, BUTTON_CREATE_ANIMAL_Y));
+            sprite->setTag(BTN_CREATE_ANIMAL);
+            pLayer->addChild(sprite, UIORDER);
+            
             // Blackboard
             frame	= CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName("blackboard.png");
             sprite	= CCSprite::spriteWithSpriteFrame(frame);
             sprite->setPosition(ccp(sprite->getContentSize().width/2, WINSIZE_Y/2));
-            sprite->setTag(BLACKBOARD);
+            sprite->setTag(TRAINING_BLACKBOARD);
             sprite->setVisible(false);
             pLayer->addChild(sprite, UIORDER-50);
 
@@ -134,7 +176,8 @@ bool UIManager::loadUI(cocos2d::CCLayer* pLayer, LAYERS layerEnum)
             sprite->setTag(SPEAKER_MUTE);
             sprite->setVisible(false);
             pLayer->addChild(sprite, UIORDER);
-
+            
+            CCLog("text1");
             label = CCLabelTTF::create(" Name", "", 60);
             label->setAnchorPoint(ccp(0, 0.5f));
             label->setPosition(ccp(20, WINSIZE_Y*0.9f));
@@ -144,7 +187,7 @@ bool UIManager::loadUI(cocos2d::CCLayer* pLayer, LAYERS layerEnum)
 
             label = CCLabelTTF::create("LEVEL  ", "", 36);
             label->setAnchorPoint(ccp(1, 0.5f));
-            label->setPosition(ccp(WINSIZE_X/4, WINSIZE_Y*0.8f));
+            label->setPosition(ccp(WINSIZE_X/4 - 40, WINSIZE_Y*0.8f));
             label->setTag(TRAIN_LEVEL);
             label->setVisible(false);
             pLayer->addChild(label, UIORDER);
@@ -158,7 +201,7 @@ bool UIManager::loadUI(cocos2d::CCLayer* pLayer, LAYERS layerEnum)
             sprite->setVisible(false);
             pLayer->addChild(sprite, UIORDER-100);
             
-            CCMenu *menuRequest = CCMenu::create();
+            menuRequest = CCMenu::create();
             menuRequest->setPosition(CCPointZero);
             menuRequest->setTag(MENU_TRAIN);
             menuRequest->setVisible(false);
@@ -176,6 +219,147 @@ bool UIManager::loadUI(cocos2d::CCLayer* pLayer, LAYERS layerEnum)
                 menuRequest->addChild(item, UIORDER);
             }
             
+            char *statusList[] = {"경험치", "행복", "잠", "배부름", "건강", "똥"};
+            
+        {
+            CCSprite    *pSprite    = CCSprite::spriteWithSpriteFrame(CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName("blackboard.png"));
+            CCMenuItemSprite *itemSprite = CCMenuItemSprite::create(pSprite, pSprite);
+            itemSprite->setPosition(ccp(WINSIZE_X*0.625f, WINSIZE_Y*0.075f));
+            itemSprite->setScaleX(WINSIZE_X*0.75f/itemSprite->getContentSize().width);
+            itemSprite->setScaleY(WINSIZE_Y*0.15f/itemSprite->getContentSize().height);
+            itemSprite->setTag(STATUS_BLACKBOARD);
+            menuRequest->addChild(itemSprite, UIORDER-50);
+        }
+            for( int i = 0; i < 6; i++ )
+            {
+                CCLabelTTF  *label      = CCLabelTTF::create(statusList[i], "Arial", 36);
+                CCMenuItemLabel *itemLabel = CCMenuItemLabel::create(label);
+                itemLabel->setAnchorPoint(ccp(0, 0.5f));
+                itemLabel->setPosition(ccp((WINSIZE_X/4)*(i%3+1) + 60, WINSIZE_Y*0.05f*(2-i/3)));
+                itemLabel->setTag(STATUS_TEXT1+i);
+                menuRequest->addChild(itemLabel, UIORDER);
+                
+                CCSprite    *pSprite    = CCSprite::spriteWithSpriteFrame(CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName("progressbar_frame.png"));
+                CCMenuItemSprite *itemSprite = CCMenuItemSprite::create(pSprite, pSprite);
+                itemSprite->setScale(0.25f);
+                itemSprite->setAnchorPoint(ccp(0, 0.5f));
+                itemSprite->setPosition(ccp((WINSIZE_X/4)*(i%3+1) + 160, WINSIZE_Y*0.05f*(2-i/3)));
+                itemSprite->setTag(STATUS_PROGRESS_FRAME1+i);
+                menuRequest->addChild(itemSprite, UIORDER);
+                
+                pSprite    = CCSprite::spriteWithSpriteFrame(CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName("progressbar.png"));
+                itemSprite = CCMenuItemSprite::create(pSprite, pSprite);
+                itemSprite->setScale(0.25f);
+                itemSprite->setAnchorPoint(ccp(0, 0.5f));
+                itemSprite->setPosition(ccp((WINSIZE_X/4)*(i%3+1) + 161, WINSIZE_Y*0.05f*(2-i/3)));
+                itemSprite->setTag(STATUS_PROGRESS_BAR1+i);
+                menuRequest->addChild(itemSprite, UIORDER);
+            }
+            
+//            CCLog("text1.5");
+//            CCMenu *pLayerCreate = CCMenu::create();
+//            CCLog("text1.5");
+//            pLayerCreate->setTag(LAYER_CREATE);
+//            pLayerCreate->setVisible(false);
+//            CCLog("text1.5");
+//            pLayer->addChild(pLayerCreate);
+//            
+//            CCLog("text2");
+            
+        {
+            CCSprite    *pSprite    = CCSprite::spriteWithSpriteFrame(CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName("blackboard.png"));
+            pSprite->setPosition(ccp(WINSIZE_X*0.5f, WINSIZE_Y*0.5f));
+            pSprite->setScaleX(WINSIZE_X*0.5f/pSprite->getContentSize().width);
+            pSprite->setScaleY(WINSIZE_Y*0.5f/pSprite->getContentSize().height);
+            pSprite->setTag(CREATE_BLACKBOARD);
+            pLayer->addChild(pSprite, UIORDER-50);
+        }
+            CCLog("text2");
+            frame	= CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName("icon_lion.png");
+            sprite	= CCSprite::spriteWithSpriteFrame(frame);
+            sprite->setPosition(ccp(WINSIZE_X*0.35f, WINSIZE_Y*0.6f));
+            sprite->setScaleX(160.f/sprite->getContentSize().width);
+            sprite->setScaleY(160.f/sprite->getContentSize().height);
+            sprite->setTag(CREATE_LION_IMG);
+            pLayer->addChild(sprite, UIORDER);
+            
+            frame	= CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName("icon_elephant.png");
+            sprite	= CCSprite::spriteWithSpriteFrame(frame);
+            sprite->setPosition(ccp(WINSIZE_X*0.35f, WINSIZE_Y*0.6f));
+            sprite->setScaleX(160.f/sprite->getContentSize().width);
+            sprite->setScaleY(160.f/sprite->getContentSize().height);
+            sprite->setTag(CREATE_ELEPHANT_IMG);
+            sprite->setVisible(false);
+            pLayer->addChild(sprite, UIORDER);
+            
+            CCLog("text2");
+            frame	= CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName("icon_monkey.png");
+            sprite	= CCSprite::spriteWithSpriteFrame(frame);
+            sprite->setPosition(ccp(WINSIZE_X*0.35f, WINSIZE_Y*0.6f));
+            sprite->setScaleX(160.f/sprite->getContentSize().width);
+            sprite->setScaleY(160.f/sprite->getContentSize().height);
+            sprite->setTag(CREATE_MONKEY_IMG);
+            sprite->setVisible(false);
+            pLayer->addChild(sprite, UIORDER);
+            CCLog("text3");
+            
+            frame	= CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName("icon_squirrel.png");
+            sprite	= CCSprite::spriteWithSpriteFrame(frame);
+            sprite->setPosition(ccp(WINSIZE_X*0.35f, WINSIZE_Y*0.6f));
+            sprite->setScaleX(160.f/sprite->getContentSize().width);
+            sprite->setScaleY(160.f/sprite->getContentSize().height);
+            sprite->setTag(CREATE_SQUIRREL_IMG);
+            sprite->setVisible(false);
+            pLayer->addChild(sprite, UIORDER);
+            
+            frame	= CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName("prev.png");
+            sprite	= CCSprite::spriteWithSpriteFrame(frame);
+            sprite->setPosition(ccp(WINSIZE_X*0.32f, WINSIZE_Y*0.35f));
+            sprite->setScale(1.5f);
+            sprite->setTag(CREATE_PREV);
+            pLayer->addChild(sprite, UIORDER);
+            
+            frame	= CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName("next.png");
+            sprite	= CCSprite::spriteWithSpriteFrame(frame);
+            sprite->setPosition(ccp(WINSIZE_X*0.38f, WINSIZE_Y*0.35f));
+            sprite->setScale(1.5f);
+            sprite->setTag(CREATE_NEXT);
+            pLayer->addChild(sprite, UIORDER);
+            
+            frame	= CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName("eraser.png");
+            sprite	= CCSprite::spriteWithSpriteFrame(frame);
+            sprite->setPosition(ccp(WINSIZE_X*0.525f, WINSIZE_Y*0.3f));
+            sprite->setScale(0.5f);
+            sprite->setTag(CREATE_OK);
+            pLayer->addChild(sprite, UIORDER);
+            
+            frame	= CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName("eraser.png");
+            sprite	= CCSprite::spriteWithSpriteFrame(frame);
+            sprite->setPosition(ccp(WINSIZE_X*0.675f, WINSIZE_Y*0.3f));
+            sprite->setScale(0.5f);
+            sprite->setTag(CREATE_CLOSE);
+            pLayer->addChild(sprite, UIORDER);
+            
+            frame	= CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName("11624_491f048fdd143.png");
+            sprite	= CCSprite::spriteWithSpriteFrame(frame);
+            sprite->setPosition(ccp(WINSIZE_X*0.6f, WINSIZE_Y*0.6f));
+            sprite->setAnchorPoint(ccp(0.5f, 0.5f));
+            sprite->setScaleX(0.5f);
+            sprite->setScaleY(0.3f);
+            sprite->setTag(CREATE_FRAME_NAME);
+            pLayer->addChild(sprite, UIORDER);
+            
+            cocos2d::CCLabelTTF *label_create_animal = CCLabelTTF::create("Input Name", "Arial", 48);
+            label_create_animal->setPosition(ccp(WINSIZE_X*0.6f, WINSIZE_Y*0.6f));
+            label_create_animal->setTag(CREATE_LABEL_NAME);
+            pLayer->addChild(label_create_animal, UIORDER);
+            
+            CCTextFieldTTF *tf_create_animal = CCTextFieldTTF::textFieldWithPlaceHolder("", CCSizeMake(200, 20), kCCTextAlignmentLeft, "Arial", 12);
+            tf_create_animal->setDelegate((InGameScene*)pLayer);
+            tf_create_animal->setTag(CREATE_TF_NAME);
+            pLayer->addChild(tf_create_animal, UIORDER);
+            
+            CCLog("text1");
 		break;
 	}
 	return true;
@@ -195,6 +379,55 @@ void UIManager::setQuestion(cocos2d::CCLayer *pLayer, int who)
     pLayer->getChildByTag(ICON_QUESTION)->setVisible(true);
 }
 
+void UIManager::setProgressBar(CCLayer* pLayer)
+{
+    int accountKey = 0;
+    int animalKey = pData->getLastPointedAnimal(accountKey);
+    if( animalKey < 0 ) return;
+    Animal *animal = pData->getAnimalByAnimalKey(accountKey, animalKey);
+    
+    STATUSINFO status = animal->getStatus();
+    // temp - static numbering
+    float ratio[6] = { ((float)status.exp)/100, ((float)status.joy)/100, ((float)status.sleep)/100, ((float)status.fullness)/100, ((float)status.health)/100, ((float)status.poop)/100 };
+    // temp - static numbering
+    for( int i = 0; i < 6; i++ )
+        pLayer->getChildByTag(MENU_TRAIN)->getChildByTag(STATUS_PROGRESS_BAR1+i)->setScaleX(0.25f*ratio[i]);
+}
+
+void UIManager::setCreateAnimalType(CCLayer* pLayer)
+{
+    switch (create_animal_type) {
+        case LION:
+            pLayer->getChildByTag(CREATE_LION_IMG)->setVisible(true);
+            pLayer->getChildByTag(CREATE_ELEPHANT_IMG)->setVisible(false);
+            pLayer->getChildByTag(CREATE_MONKEY_IMG)->setVisible(false);
+            pLayer->getChildByTag(CREATE_SQUIRREL_IMG)->setVisible(false);
+            break;
+            
+        case ELEPHANT:
+            pLayer->getChildByTag(CREATE_LION_IMG)->setVisible(false);
+            pLayer->getChildByTag(CREATE_ELEPHANT_IMG)->setVisible(true);
+            pLayer->getChildByTag(CREATE_MONKEY_IMG)->setVisible(false);
+            pLayer->getChildByTag(CREATE_SQUIRREL_IMG)->setVisible(false);
+            break;
+            
+        case MONKEY:
+            pLayer->getChildByTag(CREATE_LION_IMG)->setVisible(false);
+            pLayer->getChildByTag(CREATE_ELEPHANT_IMG)->setVisible(false);
+            pLayer->getChildByTag(CREATE_MONKEY_IMG)->setVisible(true);
+            pLayer->getChildByTag(CREATE_SQUIRREL_IMG)->setVisible(false);
+            break;
+            
+        case SQUIRREL:
+            pLayer->getChildByTag(CREATE_LION_IMG)->setVisible(false);
+            pLayer->getChildByTag(CREATE_ELEPHANT_IMG)->setVisible(false);
+            pLayer->getChildByTag(CREATE_MONKEY_IMG)->setVisible(false);
+            pLayer->getChildByTag(CREATE_SQUIRREL_IMG)->setVisible(true);
+            break;
+    }
+    
+}
+
 void UIManager::frame(CCLayer* pLayer, float dt)
 {
 	switch(pLayer->getTag())
@@ -208,7 +441,7 @@ void UIManager::frame(CCLayer* pLayer, float dt)
 			int animalKey = pData->getLastPointedAnimal(accountKey);
 			if( animalKey < 0 ) break;
 			Animal* animal = pData->getAnimalByAnimalKey(accountKey, animalKey);
-			ddt += dt/2;
+			ddt += dt/20;
 			CCPoint eps = animal->getSprite()->getPosition();
 			eps.x += pLayer->getChildByTag(THINK_CLOUD)->getContentSize().width/2;
 			eps.y += pLayer->getChildByTag(THINK_CLOUD)->getContentSize().height/2;
@@ -240,6 +473,10 @@ void UIManager::frame(CCLayer* pLayer, float dt)
 			theta += 0.25f;
 		}
         
+        if( pLayer->getChildByTag(MENU_TRAIN)->isVisible() )
+        {
+            setProgressBar(pLayer);
+        }
 		break;
 	}
     
@@ -298,6 +535,18 @@ void UIManager::callMenuTrain(CCObject *sender)
     }
 }
 
+void UIManager::createAnimal(CCLayer *pLayer)
+{
+    int accountKey = 0;
+    int animalKey = pData->getNewAnimalKey(accountKey);
+    char s[256] = {0,};
+    strcpy( s, ((CCLabelTTF*)(pLayer->getChildByTag(CREATE_LABEL_NAME)))->getString() );
+    CCLog(CCString::createWithFormat("UIManager::createAnimal : %s", ((CCLabelTTF*)(pLayer->getChildByTag(CREATE_LABEL_NAME)))->getString())->getCString());
+    ANIMALINFO animalInfo( animalKey, create_animal_type, 0, 0, s );
+    pData->makeDataFromAnimalInfo(accountKey, animalInfo);
+    pLayer->addChild(pData->getAnimalByAnimalKey(accountKey, animalInfo.key)->getSprite());
+}
+
 void UIManager::TouchesMoved(CCLayer* pLayer, CCSet *pTouches, CCEvent *pEvent)
 {    
 	switch(pLayer->getTag())
@@ -310,14 +559,7 @@ void UIManager::TouchesMoved(CCLayer* pLayer, CCSet *pTouches, CCEvent *pEvent)
 void UIManager::TouchesEnded(CCLayer* pLayer, CCSet *pTouches, CCEvent *pEvent)
 {
 	static int count;
-//	switch( (count++)%5 )
-//	{
-//	case 0:		setSpeaker(pLayer, SPEAKER_DEFAULT);	break;
-//	case 1:		setSpeaker(pLayer, SPEAKER_1);			break;
-//	case 2:		setSpeaker(pLayer, SPEAKER_2);			break;
-//	case 3:		setSpeaker(pLayer, SPEAKER_3);			break;
-//	case 4:		setSpeaker(pLayer, SPEAKER_MUTE);		break;
-//	}
+    
 	switch(pLayer->getTag())
 	{
 	case INGAME:
@@ -327,94 +569,204 @@ void UIManager::TouchesEnded(CCLayer* pLayer, CCSet *pTouches, CCEvent *pEvent)
 			
 			int accountKey = 0;
 			int animalKey = pData->findAnimalRectContainsPoint(accountKey, touch->getLocation());
-			if( !CCRect::CCRectContainsPoint( pLayer->getChildByTag(BLACKBOARD)->boundingBox(), touch->getLocation() ) &&
-				pLayer->getChildByTag(BLACKBOARD)->isVisible() )
-			{
-                //hanter
-                ((InGameScene*)pLayer)->stopTeachRecogntion();
-                
-				pLayer->getChildByTag(BLACKBOARD)->setVisible(false);
-				pLayer->getChildByTag(TRAIN_NAME)->setVisible(false);
-				pLayer->getChildByTag(TRAIN_LEVEL)->setVisible(false);
-				pLayer->getChildByTag(MENU_TRAIN)->setVisible(false);
-                
-                ((InGameScene*)pLayer)->startVoiceRecognition();
-			}
-			if( pLayer->getChildByTag(THINK_CLOUD)->isVisible() &&
-				CCRect::CCRectContainsPoint( pLayer->getChildByTag(THINK_CLOUD)->boundingBox(), touch->getLocation() ) )
-				animalKey = pData->getLastPointedAnimal(accountKey);
-			if( animalKey < 0 )
-			{
-				pLayer->getChildByTag(THINK_CLOUD)->setVisible(false);
-				pLayer->getChildByTag(ICON_MEAT)->setVisible(false);
-				pLayer->getChildByTag(ICON_BLACKBOARD)->setVisible(false);
-				pLayer->getChildByTag(ICON_SWING)->setVisible(false);
-				pLayer->getChildByTag(ICON_RUNNING)->setVisible(false);
-				pLayer->getChildByTag(ICON_ROPE)->setVisible(false);
-				continue;
-			}
-			Animal* animal = pData->getAnimalByAnimalKey(accountKey, animalKey);
-			
-			if( pLayer->getChildByTag(THINK_CLOUD)->isVisible() )
-			{
-				if( CCRect::CCRectContainsPoint( pLayer->getChildByTag(ICON_MEAT)->boundingBox(), touch->getLocation() ) )
-				{
-					animal->cancelAllMotions();
-					animal->addMotion(EAT, 5);
-				}
-				if( CCRect::CCRectContainsPoint( pLayer->getChildByTag(ICON_SWING)->boundingBox(), touch->getLocation() ) )
-				{
-					animal->cancelAllMotions();
-					animal->addMotion(FUN_SWING, 5);
-				}
-				if( CCRect::CCRectContainsPoint( pLayer->getChildByTag(ICON_RUNNING)->boundingBox(), touch->getLocation() ) )
-				{
-					animal->cancelAllMotions();
-					animal->addMotion(FUN_RUNNING, 5);
-				}
-				if( CCRect::CCRectContainsPoint( pLayer->getChildByTag(ICON_ROPE)->boundingBox(), touch->getLocation() ) )
-				{
-					animal->cancelAllMotions();
-					animal->addMotion(FUN_ROPE, 5);
-				}
-				if( CCRect::CCRectContainsPoint( pLayer->getChildByTag(ICON_BLACKBOARD)->boundingBox(), touch->getLocation() ) )
-				{
+            if( CCRect::CCRectContainsPoint( pLayer->getChildByTag(BTN_CREATE_ANIMAL)->boundingBox(), touch->getLocation() ) )
+            {
+                create_animal_type = LION;
+                ((CCLabelTTF*)(pLayer->getChildByTag(CREATE_LABEL_NAME)))->setString("Input Name");
+                pLayer->getChildByTag(CREATE_BLACKBOARD)->setVisible(true);
+                pLayer->getChildByTag(CREATE_OK)->setVisible(true);
+                pLayer->getChildByTag(CREATE_CLOSE)->setVisible(true);
+                pLayer->getChildByTag(CREATE_PREV)->setVisible(true);
+                pLayer->getChildByTag(CREATE_NEXT)->setVisible(true);
+                pLayer->getChildByTag(CREATE_FRAME_NAME)->setVisible(true);
+                pLayer->getChildByTag(CREATE_LABEL_NAME)->setVisible(true);
+                pLayer->getChildByTag(CREATE_TF_NAME)->setVisible(true);
+                setCreateAnimalType(pLayer);
+            }
+            if( pLayer->getChildByTag(CREATE_BLACKBOARD)->isVisible() )
+            {
+                if( CCRect::CCRectContainsPoint( pLayer->getChildByTag(CREATE_FRAME_NAME)->boundingBox(), touch->getLocation()) )
+                {
+                    ((CCTextFieldTTF*)(pLayer->getChildByTag(CREATE_TF_NAME)))->attachWithIME();
+                }
+                if( CCRect::CCRectContainsPoint( pLayer->getChildByTag(CREATE_OK)->boundingBox(), touch->getLocation() ) )
+                {
+                    pLayer->getChildByTag(CREATE_BLACKBOARD)->setVisible(false);
+                    pLayer->getChildByTag(CREATE_OK)->setVisible(false);
+                    pLayer->getChildByTag(CREATE_CLOSE)->setVisible(false);
+                    pLayer->getChildByTag(CREATE_PREV)->setVisible(false);
+                    pLayer->getChildByTag(CREATE_NEXT)->setVisible(false);
+                    pLayer->getChildByTag(CREATE_LION_IMG)->setVisible(false);
+                    pLayer->getChildByTag(CREATE_ELEPHANT_IMG)->setVisible(false);
+                    pLayer->getChildByTag(CREATE_MONKEY_IMG)->setVisible(false);
+                    pLayer->getChildByTag(CREATE_SQUIRREL_IMG)->setVisible(false);
+                    pLayer->getChildByTag(CREATE_FRAME_NAME)->setVisible(false);
+                    pLayer->getChildByTag(CREATE_LABEL_NAME)->setVisible(false);
+                    pLayer->getChildByTag(CREATE_TF_NAME)->setVisible(false);
+                    createAnimal(pLayer);
+                }
+                if( CCRect::CCRectContainsPoint( pLayer->getChildByTag(CREATE_CLOSE)->boundingBox(), touch->getLocation() ) )
+                {
+                    pLayer->getChildByTag(CREATE_BLACKBOARD)->setVisible(false);
+                    pLayer->getChildByTag(CREATE_OK)->setVisible(false);
+                    pLayer->getChildByTag(CREATE_CLOSE)->setVisible(false);
+                    pLayer->getChildByTag(CREATE_PREV)->setVisible(false);
+                    pLayer->getChildByTag(CREATE_NEXT)->setVisible(false);
+                    pLayer->getChildByTag(CREATE_LION_IMG)->setVisible(false);
+                    pLayer->getChildByTag(CREATE_ELEPHANT_IMG)->setVisible(false);
+                    pLayer->getChildByTag(CREATE_MONKEY_IMG)->setVisible(false);
+                    pLayer->getChildByTag(CREATE_SQUIRREL_IMG)->setVisible(false);
+                    pLayer->getChildByTag(CREATE_FRAME_NAME)->setVisible(false);
+                    pLayer->getChildByTag(CREATE_LABEL_NAME)->setVisible(false);
+                    pLayer->getChildByTag(CREATE_TF_NAME)->setVisible(false);
+                }
+                if( CCRect::CCRectContainsPoint( pLayer->getChildByTag(CREATE_NEXT)->boundingBox(), touch->getLocation() ) )
+                {
+                    CCLOG("No problem!");
+                    switch (create_animal_type) {
+                        case LION:
+                            create_animal_type = ELEPHANT;
+                            break;
+                        
+                        case ELEPHANT:
+                            create_animal_type = MONKEY;
+                            break;
+                            
+                        case MONKEY:
+                            create_animal_type = SQUIRREL;
+                            break;
+                            
+                        case SQUIRREL:
+                            create_animal_type = LION;
+                            break;
+                    }
+                    
+                    setCreateAnimalType(pLayer);
+                }
+                if( CCRect::CCRectContainsPoint( pLayer->getChildByTag(CREATE_PREV)->boundingBox(), touch->getLocation() ) )
+                {
+                    switch (create_animal_type) {
+                        case LION:
+                            create_animal_type = SQUIRREL;
+                            break;
+                            
+                        case ELEPHANT:
+                            create_animal_type = LION;
+                            break;
+                            
+                        case MONKEY:
+                            create_animal_type = ELEPHANT;
+                            break;
+                            
+                        case SQUIRREL:
+                            create_animal_type = MONKEY;
+                            break;
+                    }
+                    setCreateAnimalType(pLayer);
+                }
+            }
+            else
+            {
+                if( !CCRect::CCRectContainsPoint( pLayer->getChildByTag(TRAINING_BLACKBOARD)->boundingBox(), touch->getLocation() ) && pLayer->getChildByTag(TRAINING_BLACKBOARD)->isVisible() )
+                {
                     //hanter
-                    ((InGameScene*)pLayer)->stopVoiceRecognition();
+                    ((InGameScene*)pLayer)->stopTeachRecogntion();
                     
-                    char szLevel[8];
-                    sprintf( szLevel, "%d", animal->getAnimalInfo().level );
-					((CCLabelTTF*)pLayer->getChildByTag(TRAIN_NAME))->setString(animal->getAnimalInfo().name);
-					((CCLabelTTF*)pLayer->getChildByTag(TRAIN_LEVEL))->setString(szLevel);
+                    pLayer->getChildByTag(TRAINING_BLACKBOARD)->setVisible(false);
+                    pLayer->getChildByTag(TRAIN_NAME)->setVisible(false);
+                    pLayer->getChildByTag(TRAIN_LEVEL)->setVisible(false);
+                    pLayer->getChildByTag(MENU_TRAIN)->setVisible(false);
+                    pLayer->getChildByTag(SPEAKER_3)->setPosition(SPEAKER_X, SPEAKER_Y);
+                    pLayer->getChildByTag(SPEAKER_MUTE)->setPosition(SPEAKER_X, SPEAKER_Y);
+                    ((InGameScene*)pLayer)->startVoiceRecognition();
+                }
+                if( pLayer->getChildByTag(THINK_CLOUD)->isVisible() &&
+                    CCRect::CCRectContainsPoint( pLayer->getChildByTag(THINK_CLOUD)->boundingBox(), touch->getLocation() ) )
+                    animalKey = pData->getLastPointedAnimal(accountKey);
+                if( animalKey < 0 )
+                {
+                    pLayer->getChildByTag(THINK_CLOUD)->setVisible(false);
+                    pLayer->getChildByTag(ICON_MEAT)->setVisible(false);
+                    pLayer->getChildByTag(ICON_BLACKBOARD)->setVisible(false);
+                    pLayer->getChildByTag(ICON_SWING)->setVisible(false);
+                    pLayer->getChildByTag(ICON_RUNNING)->setVisible(false);
+                    pLayer->getChildByTag(ICON_ROPE)->setVisible(false);
+                    continue;
+                }
+                Animal* animal = pData->getAnimalByAnimalKey(accountKey, animalKey);
+                
+                if( pLayer->getChildByTag(THINK_CLOUD)->isVisible() )
+                {
+                    if( CCRect::CCRectContainsPoint( pLayer->getChildByTag(ICON_MEAT)->boundingBox(), touch->getLocation() ) )
+                    {
+                        animal->cancelAllMotions();
+                        animal->addMotion(EAT, 5);
+                        animal->addStatus(STATUS_FULLNESS, 10);
+                    }
+                    if( CCRect::CCRectContainsPoint( pLayer->getChildByTag(ICON_SWING)->boundingBox(), touch->getLocation() ) )
+                    {
+                        animal->cancelAllMotions();
+                        animal->addMotion(FUN_SWING, 5);
+                        animal->addStatus(STATUS_FULLNESS, -5);
+                        animal->addStatus(STATUS_JOY, 10);
+                        animal->addStatus(STATUS_EXP, 30);
+                    }
+                    if( CCRect::CCRectContainsPoint( pLayer->getChildByTag(ICON_RUNNING)->boundingBox(), touch->getLocation() ) )
+                    {
+                        animal->cancelAllMotions();
+                        animal->addMotion(FUN_RUNNING, 5);
+                        animal->addStatus(STATUS_FULLNESS, -5);
+                        animal->addStatus(STATUS_JOY, 10);
+                        animal->addStatus(STATUS_EXP, 10);
+                    }
+                    if( CCRect::CCRectContainsPoint( pLayer->getChildByTag(ICON_ROPE)->boundingBox(), touch->getLocation() ) )
+                    {
+                        animal->cancelAllMotions();
+                        animal->addMotion(FUN_ROPE, 5);
+                        animal->addStatus(STATUS_FULLNESS, -5);
+                        animal->addStatus(STATUS_JOY, 10);
+                        animal->addStatus(STATUS_EXP, 10);
+                    }
+                    if( CCRect::CCRectContainsPoint( pLayer->getChildByTag(ICON_BLACKBOARD)->boundingBox(), touch->getLocation() ) )
+                    {
+                        //hanter
+                        ((InGameScene*)pLayer)->stopVoiceRecognition();
+                        
+                        char szLevel[8];
+                        sprintf( szLevel, "%d", animal->getAnimalInfo().level );
+                        ((CCLabelTTF*)pLayer->getChildByTag(TRAIN_NAME))->setString(animal->getAnimalInfo().name);
+                        ((CCLabelTTF*)pLayer->getChildByTag(TRAIN_LEVEL))->setString(szLevel);
 
-					pLayer->getChildByTag(BLACKBOARD)->setVisible(!pLayer->getChildByTag(BLACKBOARD)->isVisible());
-					pLayer->getChildByTag(TRAIN_NAME)->setVisible(!pLayer->getChildByTag(TRAIN_NAME)->isVisible());
-					pLayer->getChildByTag(TRAIN_LEVEL)->setVisible(!pLayer->getChildByTag(TRAIN_LEVEL)->isVisible());
-					pLayer->getChildByTag(MENU_TRAIN)->setVisible(!pLayer->getChildByTag(MENU_TRAIN)->isVisible());
-                    
-                    ((InGameScene*)pLayer)->startTeachRecogntion();
-				}
-			}
+                        pLayer->getChildByTag(TRAINING_BLACKBOARD)->setVisible(!pLayer->getChildByTag(TRAINING_BLACKBOARD)->isVisible());
+                        pLayer->getChildByTag(TRAIN_NAME)->setVisible(!pLayer->getChildByTag(TRAIN_NAME)->isVisible());
+                        pLayer->getChildByTag(TRAIN_LEVEL)->setVisible(!pLayer->getChildByTag(TRAIN_LEVEL)->isVisible());
+                        pLayer->getChildByTag(MENU_TRAIN)->setVisible(!pLayer->getChildByTag(MENU_TRAIN)->isVisible());
+                        pLayer->getChildByTag(SPEAKER_3)->setPosition(SPEAKER_X, SPEAKER_Y+WINSIZE_Y*0.15f);
+                        pLayer->getChildByTag(SPEAKER_MUTE)->setPosition(SPEAKER_X, SPEAKER_Y+WINSIZE_Y*0.15f);
+                        
+                        ((InGameScene*)pLayer)->startTeachRecogntion();
+                    }
+                }
 
-			if( CCRect::CCRectContainsPoint( animal->getSprite()->boundingBox(), touch->getLocation() ) )
-			{
-				pLayer->getChildByTag(THINK_CLOUD)->setVisible(true);
-				pLayer->getChildByTag(ICON_MEAT)->setVisible(true);
-				pLayer->getChildByTag(ICON_BLACKBOARD)->setVisible(true);
-				pLayer->getChildByTag(ICON_SWING)->setVisible(true);
-				pLayer->getChildByTag(ICON_RUNNING)->setVisible(true);
-				pLayer->getChildByTag(ICON_ROPE)->setVisible(true);
-			}
-			else
-			{
-				pLayer->getChildByTag(THINK_CLOUD)->setVisible(false);
-				pLayer->getChildByTag(ICON_MEAT)->setVisible(false);
-				pLayer->getChildByTag(ICON_BLACKBOARD)->setVisible(false);
-				pLayer->getChildByTag(ICON_SWING)->setVisible(false);
-				pLayer->getChildByTag(ICON_RUNNING)->setVisible(false);
-				pLayer->getChildByTag(ICON_ROPE)->setVisible(false);
-			}
-
+                if( CCRect::CCRectContainsPoint( animal->getSprite()->boundingBox(), touch->getLocation() ) )
+                {
+                    pLayer->getChildByTag(THINK_CLOUD)->setVisible(true);
+                    pLayer->getChildByTag(ICON_MEAT)->setVisible(true);
+                    pLayer->getChildByTag(ICON_BLACKBOARD)->setVisible(true);
+                    pLayer->getChildByTag(ICON_SWING)->setVisible(true);
+                    pLayer->getChildByTag(ICON_RUNNING)->setVisible(true);
+                    pLayer->getChildByTag(ICON_ROPE)->setVisible(true);
+                }
+                else
+                {
+                    pLayer->getChildByTag(THINK_CLOUD)->setVisible(false);
+                    pLayer->getChildByTag(ICON_MEAT)->setVisible(false);
+                    pLayer->getChildByTag(ICON_BLACKBOARD)->setVisible(false);
+                    pLayer->getChildByTag(ICON_SWING)->setVisible(false);
+                    pLayer->getChildByTag(ICON_RUNNING)->setVisible(false);
+                    pLayer->getChildByTag(ICON_ROPE)->setVisible(false);
+                }
+            }
 		}
 		pLayer->getChildByTag(BTN_OPTION)->setScale(1.f);
 		pLayer->getChildByTag(BTN_FRIENDS)->setScale(1.f);
