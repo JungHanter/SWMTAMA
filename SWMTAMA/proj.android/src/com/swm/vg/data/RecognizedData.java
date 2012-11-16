@@ -27,7 +27,7 @@ public class RecognizedData {
 	ArrayList<AnimalInfo> animalList = null;
 	
 	
-	public void addAnimal(String name) {
+	public int addAnimal(String name) {
 		lastId += 1;
 		String animalInfo = "" + lastId + ':' + name;
 		
@@ -46,11 +46,18 @@ public class RecognizedData {
 			bw.flush();
 			
 			animalList.add(AnimalInfo.makeNewAnimal(lastId, name));
-		} catch(Exception e) {
-			e.printStackTrace();
-		} finally {
+			
 			try { bw.close(); }
 			catch(Exception e) {}
+			
+			return lastId;
+			
+		} catch(Exception e) {
+			e.printStackTrace();
+			try { bw.close(); }
+			catch(Exception e2) {}
+			
+			return -1;
 		}
 	}
 	

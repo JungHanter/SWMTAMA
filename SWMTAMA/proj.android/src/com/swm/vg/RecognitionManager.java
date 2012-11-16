@@ -15,7 +15,7 @@ import android.widget.Toast;
 import com.swm.vg.data.ActionInfo;
 import com.swm.vg.data.AnimalInfo;
 import com.swm.vg.data.RecognizedData;
-import com.swm.vg.voicetoactions.PatternMatcher;
+import com.swm.vg.voicetoactions.PatternMatcher2;
 import com.swm.vg.voicetoactions.VoiceRecognizer;
 import com.swm.vg.voicetoactions.VoiceRecognizerListener;
 
@@ -44,13 +44,23 @@ public class RecognitionManager {
 	//RECOG METHOD
 	private void analyzeCommunicateResult(String result) {
 		//먼저 동물이름 있는지 검사하자
-		ActionInfo action = PatternMatcher.patternMatch(result, animalList);
+/*		ActionInfo action = PatternMatcher.patternMatch(result, animalList);
 		final int extra = -1;
 		
 		Log.d("Analyze recognition", "who="+action.animalId+"/action="+action.actionId);
 //		callbackHandler.sendMessage(Message.obtain(callbackHandler,CALLBACK_RECOG_RESULT,
 //				action.animalId, action.actionId, Integer.valueOf(extra)));
-		callbackOnVoiceRecognitionResult(action.animalId, action.actionId, -1);
+		callbackOnVoiceRecognitionResult(action.animalId, action.actionId, -1); */
+		
+		ArrayList<ActionInfo> actionList = PatternMatcher2.search2(result, animalList);
+		final int extra = -1;
+		
+		for(ActionInfo action : actionList) {
+			Log.d("Analyze recognition", "who="+action.animalId+"/action="+action.actionId);
+//			callbackHandler.sendMessage(Message.obtain(callbackHandler,CALLBACK_RECOG_RESULT,
+//					action.animalId, action.actionId, Integer.valueOf(extra)));
+			callbackOnVoiceRecognitionResult(action.animalId, action.actionId, extra);
+		}
 	}
 	
 	
@@ -224,6 +234,10 @@ public class RecognitionManager {
 		Log.d("native->java", "teachConfirm");
 		manageHandler.sendMessage(Message.obtain(manageHandler, NATIVECALL_TEACH_CONFIRM, -1, -1,
 			Boolean.valueOf(isSave)));
+	}
+	
+	public int makeAnimal(String name) {
+		return mData.addAnimal(name);
 	}
 	
 	

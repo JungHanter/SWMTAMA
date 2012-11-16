@@ -8,7 +8,6 @@ import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.StringTokenizer;
 
@@ -35,14 +34,24 @@ public class AnimalInfo implements Comparable<AnimalInfo> {
 		int size = names.size();
 		if(size > NUM_MAX_VOICENAME) size = NUM_MAX_VOICENAME;
 		
+		//리스트에 추가 하고
+		String plusVoice = null;
 		for(int i=0; i<size; i++) {
 			String voice = MyUtils.convertNoSpace(names.get(i));
+			plusVoice = null;
 			if(!arrVoiceNames.contains(voice)) {
+				if(voice.endsWith("이")) {
+					plusVoice = voice.substring(0, voice.length()-1) + "아";
+					if(!arrVoiceNames.contains(plusVoice)) {
+						arrVoiceNames.add(plusVoice); 
+					}
+				}
 				arrVoiceNames.add(voice);
 			}
 		}
 		Collections.sort(arrVoiceNames);
 		
+		//파일에 쓰기
 		File namesFile = new File(RecognizedData.DIR_NAMES_ROOT + '/' + id + ".txt");
 		if(!namesFile.exists()) {
 			new File(RecognizedData.DIR_NAMES_ROOT).mkdirs();
@@ -95,12 +104,19 @@ public class AnimalInfo implements Comparable<AnimalInfo> {
 			catch(Exception e) {}
 		}
 		
-		Collections.sort(arrVoiceNames);
 		return arrVoiceNames;
 	}
 	
 	private void initVoiceName() {
 		namesCount = 0;
+		
+		String plusName = null;
+		if(name.endsWith("이")) {
+			//ex) 애봉이 -> 애봉아; ~아 추가
+			plusName = name.substring(0, name.length()-1) + "아";
+			arrVoiceNames.add(plusName);
+		}
+		
 		File namesFile = new File(RecognizedData.DIR_NAMES_ROOT + '/' + id + ".txt");
 		if(!namesFile.exists()) {
 			new File(RecognizedData.DIR_NAMES_ROOT).mkdirs();
@@ -110,6 +126,10 @@ public class AnimalInfo implements Comparable<AnimalInfo> {
 			bw = new BufferedWriter(new OutputStreamWriter(
 					new FileOutputStream(namesFile, false), "utf-8"));
 			bw.write(name + ":" + namesCount);
+			
+			if(plusName != null) {
+				bw.write('\n' + plusName);
+			}
 			
 			bw.flush();
 		} catch (Exception e) {
@@ -175,7 +195,7 @@ public class AnimalInfo implements Comparable<AnimalInfo> {
 		return ( id - another.id );
 	}
 	
-	public class AnimalAction{
+	public class AnimalAction {
 		final int actionId;
 		final ArrayList<ActionVoice> arrActionVoice;
 		int actionCount;
@@ -217,6 +237,20 @@ public class AnimalInfo implements Comparable<AnimalInfo> {
 			actionCount = 0;
 		}
 		
+		private void addActionVoiceConvert(String addingVoice, int exceptNum) {
+			String convertVoice = addingVoice.substring(0, addingVoice.length()-exceptNum);	//먹어->먹, 먹자->먹, 먹어라->먹 등
+			boolean bAlreadyExist = false;
+			for(ActionVoice actionVoice : arrActionVoice) {
+				if(actionVoice.getVoiceString().equals(convertVoice)) {
+					actionVoice.addCount();
+					bAlreadyExist = true;
+					break;
+				}
+			}
+			if(!bAlreadyExist)
+				arrActionVoice.add( new ActionVoice(convertVoice));
+		}
+		
 		public void addActionVoice(ArrayList<String> arrVoiceString) {
 			int size = arrVoiceString.size();
 			boolean bNeedSort = false, bAlreadyExist = false;;
@@ -233,6 +267,19 @@ public class AnimalInfo implements Comparable<AnimalInfo> {
 				}
 				if(!bAlreadyExist) {
 					arrActionVoice.add( new ActionVoice(nowVoice) );
+					
+					//접속사를 위해서
+					if(nowVoice.endsWith("어")) {
+						addActionVoiceConvert(nowVoice, 1);
+					} else if(nowVoice.endsWith("자")) {
+						addActionVoiceConvert(nowVoice, 1);
+					} else if(nowVoice.endsWith("어라")) {
+						addActionVoiceConvert(nowVoice, 2);
+					} else if(nowVoice.endsWith("해")) {
+						addActionVoiceConvert(nowVoice, 1);
+					}
+					//일단 이정도만?
+					
 					bNeedSort = true;
 				}
 				
@@ -273,7 +320,6 @@ public class AnimalInfo implements Comparable<AnimalInfo> {
 			return sum;
 		}
 		
-		
 		public class ActionVoice implements Comparable<ActionVoice> {
 			final String voice;
 			int count;
@@ -283,6 +329,11 @@ public class AnimalInfo implements Comparable<AnimalInfo> {
 			}
 			
 			public String getVoiceString() {
+				return voice;
+			}
+			
+			@Override
+			public String toString() {
 				return voice;
 			}
 			
@@ -298,7 +349,10 @@ public class AnimalInfo implements Comparable<AnimalInfo> {
 
 			@Override
 			public int compareTo(ActionVoice another) {
-				return voice.compareTo(another.voice);
+				//길이우선->이름순 정렬
+				int comp = (another.voice.length() - voice.length()) * 100000;
+				if(comp == 0) comp = voice.compareTo(another.voice);
+				return comp;
 			}
 		}
 	}
