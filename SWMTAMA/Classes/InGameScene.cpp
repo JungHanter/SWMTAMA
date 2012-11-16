@@ -455,33 +455,16 @@ void InGameScene::teachConfirm(bool isSave) {
 int InGameScene::makeAnimal(char* const name) {
     JniMethodInfo info;
     
-    //    if(JniHelper::getMethodInfo(info, "com.swm.vg.RecognitionManager", "makeAnimal", "(Ljava/lang/String;)I"))
+    if(JniHelper::getMethodInfo(info, "com.swm.vg.RecognitionManager", "makeAnimal", "(Ljava/lang/String;)I"))
     //    if(JniHelper::getMethodInfo(info, "com.swm.vg.RecognitionManager", "makeAnimal2", "(Ljava/lang/Object;)V"))
-    
-    if(JniHelper::getMethodInfo(info, "com.swm.vg.RecognitionManager", "makeAnimal3", "()V"))
-        
+//    if(JniHelper::getMethodInfo(info, "com.swm.vg.RecognitionManager", "makeAnimal3", "()V"))
     {
         jstring jname = info.env->NewStringUTF(name);
         
         CCLog("JNI--makeAnimal");
-        //        return info.env->CallIntMethod(recogManager, info.methodID, jname);
-        //        info.env->CallVoidMethod(recogManager, info.methodID, jname);
-        info.env->CallVoidMethod(recogManager, info.methodID);
-    }
-    
-    return -1;
-}
-
-int InGameScene::makeAnimal2() {
-    JniMethodInfo info;
-    
-    if(JniHelper::getMethodInfo(info, "com.swm.vg.RecognitionManager", "makeAnimal3", "()V"))
-    {
-//        jstring jname = info.env->NewStringUTF(name);
-        
-        CCLog("JNI--makeAnimal");
-        
-        info.env->CallVoidMethod(recogManager, info.methodID);
+        return info.env->CallIntMethod(recogManager, info.methodID, jname);
+//        info.env->CallVoidMethod(recogManager, info.methodID, jname);
+//        info.env->CallVoidMethod(recogManager, info.methodID);
     }
     
     return -1;

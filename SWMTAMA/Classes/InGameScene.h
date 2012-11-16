@@ -63,7 +63,6 @@ public:
 	void teachNameSpeeching(int who);
 	void teachConfirm(bool isSave);
     int makeAnimal(char* const name);
-    int makeAnimal2();
     
     //java->cpp
 public:
