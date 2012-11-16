@@ -179,7 +179,18 @@ void CCTextFieldTTF::insertText(const char * text, int len)
         len = nPos;
         sInsert.erase(nPos);
     }
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+    if (m_pDelegate && m_pDelegate->onTextFieldInsertText(this, sInsert.c_str(), len))
+    {
+        // delegate doesn't want insert text
+        return;
+    }
     
+    m_nCharCount += _calcCharCount(sInsert.c_str());
+    std::string sText(*m_pInputText);
+    sText.swap(sInsert);
+    setString(sText.c_str());
+#else
     if (len > 0)
     {
         if (m_pDelegate && m_pDelegate->onTextFieldInsertText(this, sInsert.c_str(), len))
@@ -193,7 +204,7 @@ void CCTextFieldTTF::insertText(const char * text, int len)
         sText.append(sInsert);
         setString(sText.c_str());
     }
-
+#endif
     if ((int)sInsert.npos == nPos) {
         return;
     }

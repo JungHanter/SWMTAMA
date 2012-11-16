@@ -72,7 +72,7 @@ protected:
 	ANIMALINFO				info;
 	CCSprite*				pBody;
 	MOTION					motionState;
-	cocos2d::CCTexture2D	*animates[MOTION_END];
+	cocos2d::CCTexture2D	*animates[MOTION_END][SPRITE_FRAME];
 	queue<MOTIONPACK*>		motionQueue;
 
 protected:

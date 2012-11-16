@@ -19,27 +19,13 @@ Animal::~Animal(void)
 
 bool Animal::makeAnimateWithImage(const char* filename, MOTION motion)
 {
-	CCTexture2D *pTexture	= CCTextureCache::sharedTextureCache()->addImage(filename);
-	//CCSize		sizeTexture = pTexture->getContentSize();
-	//
-	//CCAnimation *animation	= CCAnimation::create();
-	//animation->setDelayPerUnit(0.1f);
-
-	//sizeTexture.width /= SPRITE_FRAME;
-	//for( int iFrame = 0; iFrame < SPRITE_FRAME; iFrame++ )
-	//{		
-	//	animation->addSpriteFrameWithTexture(pTexture, CCRectMake(
-	//		sizeTexture.width*iFrame, 
-	//		sizeTexture.height*0, 
-	//		sizeTexture.width, 
-	//		sizeTexture.height));
-	//}
-
-	//CCAnimate			*animate	= CCAnimate::create(animation);
-	////CCAction		*temp		= CCActionEase::create(animate);
-
-	//animate->setDuration(duration[motion]);
-	animates[motion] = pTexture;
+    for(int i = 0; i < SPRITE_FRAME; i++)
+    {
+        //if sprite frame is over 10 it must be modified.
+        string filename_divided = CCString::createWithFormat("characters/%s_0%d.png", filename, i+1)->getCString();
+        CCTexture2D *pTexture	= CCTextureCache::sharedTextureCache()->addImage(filename_divided.data());
+        animates[motion][i] = pTexture;
+    }
 	
 	return true;
 }
@@ -289,24 +275,19 @@ void Animal::cancelAllMotions()
 
 void Animal::runActionWithMotion(MOTION motion)
 {
-	CCTexture2D *pTexture	= animates[motion];
-	CCSize		sizeTexture = pTexture->getContentSize();
-	
-	CCAnimation *animation	= CCAnimation::create();
+    CCAnimation *animation	= CCAnimation::create();
 	animation->setDelayPerUnit(0.1f);
-
-	sizeTexture.width /= SPRITE_FRAME;
-	for( int iFrame = 0; iFrame < SPRITE_FRAME; iFrame++ )
-	{		
-		animation->addSpriteFrameWithTexture(pTexture, CCRectMake(
-			sizeTexture.width*iFrame, 
-			sizeTexture.height*0, 
-			sizeTexture.width, 
-			sizeTexture.height));
+    
+    for( int iFrame = 0; iFrame < SPRITE_FRAME; iFrame++ )
+	{
+        CCTexture2D *pTexture	= animates[motion][iFrame];
+        CCSize		sizeTexture = pTexture->getContentSize();
+		animation->addSpriteFrameWithTexture(pTexture, CCRectMake(0, 0, sizeTexture.width, sizeTexture.height));
 	}
     
-	CCAnimate			*animate	= CCAnimate::create(animation);//CCAnimate::create(animates[motion]->animation());
-	CCFiniteTimeAction	*action;
+	CCAnimate			*animate	= CCAnimate::create(animation);
+    
+    CCFiniteTimeAction	*action;
 	CCPoint				direction;
 
 	animate->setDuration(duration[motion]);

@@ -13,23 +13,23 @@ Lion::~Lion(void)
 
 bool Lion::makeAnimates()
 {
-	makeAnimateWithImage("LION_WALK_LEFT.png", WALK_LEFT);
-	makeAnimateWithImage("LION_WALK_RIGHT.png", WALK_RIGHT);
-	makeAnimateWithImage("LION_WALK_BACK_LEFT.png", WALK_BACK_LEFT);
-	makeAnimateWithImage("LION_WALK_BACK_RIGHT.png", WALK_BACK_RIGHT);
-	makeAnimateWithImage("LION_RUN_LEFT.png", RUN_LEFT);
-	makeAnimateWithImage("LION_RUN_RIGHT.png", RUN_RIGHT);
-	makeAnimateWithImage("LION_RUN_BACK_LEFT.png", RUN_BACK_LEFT);
-	makeAnimateWithImage("LION_RUN_BACK_RIGHT.png", RUN_BACK_RIGHT);
-	makeAnimateWithImage("LION_STAND.png", STAND);
-	makeAnimateWithImage("LION_SIT.png", SIT);
-	makeAnimateWithImage("LION_SLEEP.png", SLEEP);
-	makeAnimateWithImage("LION_EAT.png", EAT);
-	makeAnimateWithImage("LION_POOP.png", POOP);
-	makeAnimateWithImage("LION_SICK.png", SICK);
-	makeAnimateWithImage("LION_SWING.png", FUN_SWING);
-	makeAnimateWithImage("LION_RUNNING.png", FUN_RUNNING);
-	makeAnimateWithImage("LION_ROPE.png", FUN_ROPE);
+	makeAnimateWithImage("LION_WALK_LEFT", WALK_LEFT);
+	makeAnimateWithImage("LION_WALK_RIGHT", WALK_RIGHT);
+	makeAnimateWithImage("LION_WALK_BACK_LEFT", WALK_BACK_LEFT);
+	makeAnimateWithImage("LION_WALK_BACK_RIGHT", WALK_BACK_RIGHT);
+	makeAnimateWithImage("LION_RUN_LEFT", RUN_LEFT);
+	makeAnimateWithImage("LION_RUN_RIGHT", RUN_RIGHT);
+	makeAnimateWithImage("LION_RUN_BACK_LEFT", RUN_BACK_LEFT);
+	makeAnimateWithImage("LION_RUN_BACK_RIGHT", RUN_BACK_RIGHT);
+	makeAnimateWithImage("LION_STAND", STAND);
+	makeAnimateWithImage("LION_SIT", SIT);
+	makeAnimateWithImage("LION_SLEEP", SLEEP);
+	makeAnimateWithImage("LION_EAT", EAT);
+	makeAnimateWithImage("LION_POOP", POOP);
+	makeAnimateWithImage("LION_SICK", SICK);
+	makeAnimateWithImage("LION_SWING", FUN_SWING);
+	makeAnimateWithImage("LION_RUNNING", FUN_RUNNING);
+	makeAnimateWithImage("LION_ROPE", FUN_ROPE);
 
 	return true;
 }

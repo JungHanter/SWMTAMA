@@ -76,7 +76,7 @@ private:
 public:
 	static UIManager* create();
 	bool init();
-	bool loadUI(cocos2d::CCLayer* pLayer, LAYERS layerEnum);
+	bool loadUI(cocos2d::CCLayer* pLayer, LAYERS layerEnum, cocos2d::CCLayer* pUILayer = NULL);
 	void setDataManager(DataManager* pDataManager);
 	void frame(cocos2d::CCLayer* pLayer, float dt);
     void setSpeaker(cocos2d::CCLayer* pLayer, UI_INGAME speaker_only);

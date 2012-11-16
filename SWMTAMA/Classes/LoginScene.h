@@ -14,6 +14,7 @@ enum LOGIN_INPUT { LOGIN_TF_ID=100, LOGIN_TF_PW };
 class LoginScene : public BasisScene, public CCTextFieldDelegate
 {
 private:
+    std::string buffer;
     cocos2d::CCLabelTTF *userID;
     cocos2d::CCLabelTTF *userPW;
     
@@ -37,6 +38,8 @@ public:
     
 private:
     virtual void ccTouchesBegan(cocos2d::CCSet *pTouches, cocos2d::CCEvent *pEvent);
+    virtual void ccTouchesMoved(cocos2d::CCSet *pTouches, cocos2d::CCEvent *pEvent);
+    virtual void ccTouchesEnded(cocos2d::CCSet *pTouches, cocos2d::CCEvent *pEvent);
     virtual bool onTextFieldAttachWithIME(CCTextFieldTTF* sender);
     virtual bool onTextFieldDetachWithIME(CCTextFieldTTF * sender);
     virtual bool onTextFieldDeleteBackward(CCTextFieldTTF * pSender, const char * delText, int nLen);

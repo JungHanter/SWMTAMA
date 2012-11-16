@@ -30,6 +30,7 @@ void DataManager::frame(CCLayer *pLayer, float dt)
     setZOrders(pLayer, dt);
     int accountKey = 0;
     map<int, Animal*> *animals = getAnimalsByAccount(accountKey);
+    if( animals == NULL ) return;
     for( map<int, Animal*>::iterator animalIter = animals->begin();
         animalIter != animals->end(); animalIter++ )
     {

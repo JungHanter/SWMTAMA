@@ -25,6 +25,6 @@ public:
     DataManager* getDataManager();
     UIManager* getUIManager();
     NetworkManager* getNetworkManager();
-    bool initBackground(const char *filename, cocos2d::CCSize winSize);
+    bool initBackground(cocos2d::CCLayer* pLayer, const char *filename, cocos2d::CCSize winSize);
 };
 

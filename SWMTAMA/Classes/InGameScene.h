@@ -9,7 +9,7 @@
 
 #define TAG_INGAMESCENE 100
 #define TAG_INGAMELAYER INGAME
-
+#define TAG_INGAMEUILAYER 99999
 
 class InGameScene : public BasisScene, public CCTextFieldDelegate
 {
@@ -22,6 +22,7 @@ private:
 	bool istoucheDelegate;
 	cocos2d::CCPoint lastestTouch;
     CCLabelTTF *debugLabel2;
+    static cocos2d::CCLayer *pUILayer;
     
 public:
 	static cocos2d::CCScene* scene();
@@ -41,6 +42,7 @@ private:
 
 private:
 	bool initTerrain(const char *filename, cocos2d::CCSize winSize);
+    bool isInBackground(cocos2d::CCPoint location, float scale);
     
 private:
     void onHttpRequestCompleted(cocos2d::CCNode *sender, void *data);

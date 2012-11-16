@@ -9,15 +9,19 @@
 USING_NS_CC;
 USING_NS_CC_EXT;
 
+#define URL_CREATE_ID           "http://swmtama.appspot.com/create_id.jsp"
 #define URL_LOGIN				"http://swmtama.appspot.com/login.jsp"
-#define URL_REQUEST_FRIEND		"http://swmtama.appspot.com/req_FriendList.jsp"
-#define URL_REQUEST_THUMBNAIL	"http://swmtama.appspot.com/req_Thumbnail.jsp"
-#define URL_SEND_ACTION			"http://swmtama.appspot.com/send_act.jsp"
-#define URL_CHECK_ACTION		"http://swmtama.appspot.com/check_act.jsp"
-#define URL_REQUEST_BREED		"http://swmtama.appspot.com/req_breed.jsp"
-#define URL_CHECK_BREED			"http://swmtama.appspot.com/check_breed.jsp"
-#define URL_ANSWER_BREED		"http://swmtama.appspot.com/answer_breed.jsp"
-#define URL_RESPOND_BREED		"http://swmtama.appspot.com/resp_breed.jsp"
+#define URL_CREATE_ANIMAL       "http://swmtama.appspot.com/create_animal.jsp"
+#define URL_ANIMAL_MANAGE       "http://swmtama.appspot.com/animal_manage.jsp"
+
+//#define URL_REQUEST_FRIEND		"http://swmtama.appspot.com/req_FriendList.jsp"
+//#define URL_REQUEST_THUMBNAIL	"http://swmtama.appspot.com/req_Thumbnail.jsp"
+//#define URL_SEND_ACTION			"http://swmtama.appspot.com/send_act.jsp"
+//#define URL_CHECK_ACTION		"http://swmtama.appspot.com/check_act.jsp"
+//#define URL_REQUEST_BREED		"http://swmtama.appspot.com/req_breed.jsp"
+//#define URL_CHECK_BREED			"http://swmtama.appspot.com/check_breed.jsp"
+//#define URL_ANSWER_BREED		"http://swmtama.appspot.com/answer_breed.jsp"
+//#define URL_RESPOND_BREED		"http://swmtama.appspot.com/resp_breed.jsp"
 
 class NetworkManager : public cocos2d::CCLayer
 {

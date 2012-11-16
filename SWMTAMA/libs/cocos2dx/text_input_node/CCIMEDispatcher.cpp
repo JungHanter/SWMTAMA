@@ -217,8 +217,11 @@ void CCIMEDispatcher::dispatchInsertText(const char * pText, int nLen)
 {
     do 
     {
+#if(CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+        CC_BREAK_IF(! m_pImpl || ! pText);
+#else
         CC_BREAK_IF(! m_pImpl || ! pText || nLen <= 0);
-
+#endif
         // there is no delegate attach with ime
         CC_BREAK_IF(! m_pImpl->m_DelegateWithIme);
 

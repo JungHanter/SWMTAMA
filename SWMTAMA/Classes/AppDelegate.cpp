@@ -23,7 +23,7 @@ bool AppDelegate::applicationDidFinishLaunching()
     // initialize director
     CCDirector *pDirector = CCDirector::sharedDirector();
     pDirector->setOpenGLView(CCEGLView::sharedOpenGLView());
-    CCEGLView::sharedOpenGLView()->setDesignResolutionSize(1280.f,800.f, kResolutionShowAll);
+    CCEGLView::sharedOpenGLView()->setDesignResolutionSize(WINSIZE_X,WINSIZE_Y, kResolutionShowAll);
     
     // enable High Resource Mode(2x, such as iphone4) and maintains low resource on other devices.
 //    pDirector->enableRetinaDisplay(true);
@@ -36,8 +36,8 @@ bool AppDelegate::applicationDidFinishLaunching()
 
     // create a scene. it's an autorelease object
     
-    CCScene *pScene = InGameScene::scene();
-    //CCScene *pScene = LoginScene::scene();
+    //CCScene *pScene = InGameScene::scene();
+    CCScene *pScene = LoginScene::scene();
 
     // run
     pDirector->runWithScene(pScene);
