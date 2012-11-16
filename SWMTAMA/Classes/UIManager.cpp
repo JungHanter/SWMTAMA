@@ -551,13 +551,25 @@ void UIManager::callMenuTrain(CCObject *sender)
 void UIManager::createAnimal(CCLayer *pLayer)
 {
     int accountKey = 0;
-    int animalKey = pData->getNewAnimalKey(accountKey);
+//    int animalKey = pData->getNewAnimalKey(accountKey);
     char s[256] = {0,};
     strcpy( s, ((CCLabelTTF*)(pLayer->getChildByTag(CREATE_LABEL_NAME)))->getString() );
+//    int animalKey = ((InGameScene*)pLayer)->makeAnimal(s);
+    int animalKey = 4;
+    
+    //error ToT , hanter 
+    ((InGameScene*)pLayer)->stopVoiceRecognition();
+    
+//    pLayer->runAction(CCCallFunc::create(pLayer, callfunc_selector(InGameScene::makeAnimal2)));
+    
+
     CCLog(CCString::createWithFormat("UIManager::createAnimal : %s", ((CCLabelTTF*)(pLayer->getChildByTag(CREATE_LABEL_NAME)))->getString())->getCString());
+    
     ANIMALINFO animalInfo( animalKey, create_animal_type, 0, 0, s );
     pData->makeDataFromAnimalInfo(accountKey, animalInfo);
     CCDirector::sharedDirector()->getRunningScene()->getChildByTag(TAG_INGAMELAYER)->addChild(pData->getAnimalByAnimalKey(accountKey, animalInfo.key)->getSprite());
+    
+    
 }
 
 void UIManager::TouchesMoved(CCLayer* pLayer, CCSet *pTouches, CCEvent *pEvent)

@@ -237,7 +237,17 @@ public class RecognitionManager {
 	}
 	
 	public int makeAnimal(String name) {
+		Log.d("native->java", "makeAnimal");
 		return mData.addAnimal(name);
+	}
+	
+	public void makeAnimal2(Object name) {
+		Log.d("native->java", "makeAnimal2");
+		mData.addAnimal((String)name);
+	}
+	
+	public void makeAnimal3() {
+		Log.d("native->java", "makeAnimal3");
 	}
 	
 	
