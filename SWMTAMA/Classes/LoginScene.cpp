@@ -158,9 +158,8 @@ void LoginScene::callTryLogin(CCObject *sender)
     
     pLayer->getNetworkManager()->postMessage(URL_LOGIN, body.data(), this, callfuncND_selector(LoginScene::onHttpRequestCompleted), "URL_LOGIN");
     
-//    pLayer->getNetworkManager()->postMessage(URL_CREATE_ANIMAL, "name=뽀비", this, callfuncND_selector(LoginScene::onHttpRequestCompleted), "URL_CREATE_ANIMAL");
-//    // animalKey
-//    
+//    pLayer->getNetworkManager()->postMessage(URL_CREATE_ANIMAL, "accountKey=0&animalKey=0&name=뽀비", this, callfuncND_selector(LoginScene::onHttpRequestCompleted), "URL_CREATE_ANIMAL");
+//
 //    pLayer->getNetworkManager()->postMessage(URL_ANIMAL_MANAGE, "sleep=80&poop=80&exp=80&fullness=80&health=80&joy=80&animalKey=100", this, callfuncND_selector(LoginScene::onHttpRequestCompleted), "URL_ANIMAL_MANAGE");
 //    // success, fail
 //    
