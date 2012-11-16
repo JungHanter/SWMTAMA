@@ -63,7 +63,7 @@ struct MOTIONPACK
 {
 	MOTION		name;
 	short		num_of_repeat;
-
+    bool        isOrder;
 };
 
 class Animal : public CCObject
@@ -71,7 +71,7 @@ class Animal : public CCObject
 protected:
 	ANIMALINFO				info;
 	CCSprite*				pBody;
-	MOTION					motionState;
+	MOTIONPACK				motionState;
 	cocos2d::CCTexture2D	*animates[MOTION_END][SPRITE_FRAME];
 	queue<MOTIONPACK*>		motionQueue;
 
@@ -83,9 +83,9 @@ protected:
     MOTION getDefaultMotion(int action);
     
 public:
-	void addMotion(MOTION name, short num_of_repeat, bool cleanQueue = false);
+	void addMotion(MOTION name, short num_of_repeat, bool isOrder, bool cleanQueue = false);
 	void addMotion(MOTIONPACK pack, bool cleanQueue = false);
-    void doAction(int action, int num_of_repeat = 1);
+    void doAction(int action, bool isOrder);
 	void cancelAllMotions();
 	virtual void runActionWithMotion(MOTION motion);
 	
@@ -97,7 +97,7 @@ public:
 public:
 	cocos2d::CCSprite* getSprite();
 	void setSprite(cocos2d::CCSprite *pBody);
-	MOTION getMotionState();
+	MOTIONPACK getMotionState();
 	ANIMALINFO getAnimalInfo();
 
 public:

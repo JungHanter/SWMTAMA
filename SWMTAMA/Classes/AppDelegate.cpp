@@ -36,8 +36,8 @@ bool AppDelegate::applicationDidFinishLaunching()
 
     // create a scene. it's an autorelease object
     
-    //CCScene *pScene = InGameScene::scene();
-    CCScene *pScene = LoginScene::scene();
+    CCScene *pScene = InGameScene::scene();
+    //CCScene *pScene = LoginScene::scene();
 
     // run
     pDirector->runWithScene(pScene);

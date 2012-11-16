@@ -207,15 +207,15 @@ bool UIManager::loadUI(cocos2d::CCLayer* pLayer, LAYERS layerEnum, cocos2d::CCLa
             menuRequest->setVisible(false);
             pUILayer->addChild(menuRequest, UIORDER);
             
-            char* trainList[] = {"이름 인지하기", "밥 먹기", "뛰기", "쉬기", "자기", "멈추기", "런닝머신 타기", "줄 넘기", "그네 타기"};
-            int tagList[] = {TEXTBTN_NAME, ACTION_BASIC_EAT, ACTION_BASIC_RUN, ACTION_BASIC_REST, ACTION_BASIC_SLEEP, ACTION_BASIC_STOP, ACTION_TRAINING_RUNNING, ACTION_TRAINING_ROPE, ACTION_PLAYING_SWING};
+            char* trainList[] = {"이름 인지하기", "다가오기", "밥 먹기", "약 먹기", "뛰기", "쉬기", "자기", "멈추기", "잠에서 깨기", "런닝머신 타기", "줄 넘기", "그네 타기"};
+            int tagList[] = {TEXTBTN_NAME, ACTION_BASIC_COME, ACTION_BASIC_EAT, ACTION_BASIC_CURE, ACTION_BASIC_RUN, ACTION_BASIC_REST, ACTION_BASIC_SLEEP, ACTION_BASIC_STOP, ACTION_BASIC_WAKE, ACTION_TRAINING_RUNNING, ACTION_TRAINING_ROPE, ACTION_PLAYING_SWING};
             for( int i = 0; i < sizeof(trainList)/sizeof(char*); i++ )
             {
-                CCLabelTTF *label = CCLabelTTF::create(trainList[i], "Arial", 36);
+                CCLabelTTF *label = CCLabelTTF::create(trainList[i], "Arial", 30);
                 CCMenuItemLabel *item = CCMenuItemLabel::create(label, pLayer, menu_selector(UIManager::callMenuTrain));
                 item->setAnchorPoint(ccp(0, 0.5f));
                 item->setTag(tagList[i]);
-                item->setPosition(ccp(20, WINSIZE_Y*(0.7f-0.07f*i)));
+                item->setPosition(ccp(20, WINSIZE_Y*(0.72f-0.06f*i)));
                 menuRequest->addChild(item, UIORDER);
             }
             
@@ -517,6 +517,8 @@ void UIManager::TouchesBegan(CCLayer* pLayer, CCSet *pTouches, CCEvent *pEvent)
 				pUILayer->getChildByTag(BTN_FRIENDS)->setScale(1.1f);
 			if( CCRect::CCRectContainsPoint( pUILayer->getChildByTag(BTN_MULTI_PRACTICE)->boundingBox(), touch->getLocation() ) )
 				pUILayer->getChildByTag(BTN_MULTI_PRACTICE)->setScale(1.1f);
+            if( CCRect::CCRectContainsPoint( pUILayer->getChildByTag(BTN_CREATE_ANIMAL)->boundingBox(), touch->getLocation() ) )
+				pUILayer->getChildByTag(BTN_CREATE_ANIMAL)->setScale(1.1f);
 		}
 		break;
 	}
@@ -526,24 +528,24 @@ void UIManager::callMenuTrain(CCObject *sender)
 {
     int accountKey = 0;
     int actionTag = ((CCMenuItemLabel*)sender)->getTag();
-//    InGameScene *pLayer = ((InGameScene*)((CCMenuItemLabel*)sender)->getParent()->getParent()->getParent()->getChildByTag(TAG_INGAMELAYER));
-//    int who = pLayer->getDataManager()->getLastPointedAnimal(accountKey);
-//    if( who == -1 )
-//    {
-//        CCLog("UIManager::callMenuTrain : Wrong Last Pointed Animal");
-//        return;
-//    }
-//    
-//    switch (actionTag) {
-//        case TEXTBTN_NAME:
-//            //hanter
-//            pLayer->teachNameSpeeching(who);
-//            break;
-//            //hanter
-//        default:
-//            pLayer->teachSpeeching(who, actionTag);
-//            break;
-//    }
+    InGameScene *pLayer = ((InGameScene*)((CCMenuItemLabel*)sender)->getParent()->getParent()->getParent()->getChildByTag(TAG_INGAMELAYER));
+    int who = pLayer->getDataManager()->getLastPointedAnimal(accountKey);
+    if( who == -1 )
+    {
+        CCLog("UIManager::callMenuTrain : Wrong Last Pointed Animal");
+        return;
+    }
+    
+    switch (actionTag) {
+        case TEXTBTN_NAME:
+            //hanter
+            pLayer->teachNameSpeeching(who);
+            break;
+            //hanter
+        default:
+            pLayer->teachSpeeching(who, actionTag);
+            break;
+    }
 }
 
 void UIManager::createAnimal(CCLayer *pLayer)
@@ -603,6 +605,18 @@ void UIManager::TouchesEnded(CCLayer* pLayer, CCSet *pTouches, CCEvent *pEvent)
                 pUILayer->getChildByTag(CREATE_LABEL_NAME)->setVisible(true);
                 pUILayer->getChildByTag(CREATE_TF_NAME)->setVisible(true);
                 setCreateAnimalType(pUILayer);
+            }
+            else if( CCRect::CCRectContainsPoint( pUILayer->getChildByTag(BTN_MULTI_PRACTICE)->boundingBox(), touch->getLocation() ) )
+            {
+                
+            }
+            else if( CCRect::CCRectContainsPoint( pUILayer->getChildByTag(BTN_FRIENDS)->boundingBox(), touch->getLocation() ) )
+            {
+                
+            }
+            else if( CCRect::CCRectContainsPoint( pUILayer->getChildByTag(BTN_OPTION)->boundingBox(), touch->getLocation() ) )
+            {
+                
             }
             if( pUILayer->getChildByTag(CREATE_BLACKBOARD)->isVisible() )
             {
@@ -715,19 +729,19 @@ void UIManager::TouchesEnded(CCLayer* pLayer, CCSet *pTouches, CCEvent *pEvent)
                     continue;
                 }
                 Animal* animal = pData->getAnimalByAnimalKey(accountKey, animalKey);
-                
+
                 if( pLayer->getChildByTag(THINK_CLOUD)->isVisible() )
                 {
                     if( CCRect::CCRectContainsPoint( pLayer->getChildByTag(ICON_MEAT)->boundingBox(), point ) )
                     {
                         animal->cancelAllMotions();
-                        animal->addMotion(EAT, 5);
+                        animal->addMotion(EAT, 5, true);
                         animal->addStatus(STATUS_FULLNESS, 10);
                     }
                     if( CCRect::CCRectContainsPoint( pLayer->getChildByTag(ICON_SWING)->boundingBox(), point ) )
                     {
                         animal->cancelAllMotions();
-                        animal->addMotion(FUN_SWING, 5);
+                        animal->addMotion(FUN_SWING, 5, true);
                         animal->addStatus(STATUS_FULLNESS, -5);
                         animal->addStatus(STATUS_JOY, 10);
                         animal->addStatus(STATUS_EXP, 30);
@@ -735,7 +749,7 @@ void UIManager::TouchesEnded(CCLayer* pLayer, CCSet *pTouches, CCEvent *pEvent)
                     if( CCRect::CCRectContainsPoint( pLayer->getChildByTag(ICON_RUNNING)->boundingBox(), point ) )
                     {
                         animal->cancelAllMotions();
-                        animal->addMotion(FUN_RUNNING, 5);
+                        animal->addMotion(FUN_RUNNING, 5, true);
                         animal->addStatus(STATUS_FULLNESS, -5);
                         animal->addStatus(STATUS_JOY, 10);
                         animal->addStatus(STATUS_EXP, 10);
@@ -743,7 +757,7 @@ void UIManager::TouchesEnded(CCLayer* pLayer, CCSet *pTouches, CCEvent *pEvent)
                     if( CCRect::CCRectContainsPoint( pLayer->getChildByTag(ICON_ROPE)->boundingBox(), point ) )
                     {
                         animal->cancelAllMotions();
-                        animal->addMotion(FUN_ROPE, 5);
+                        animal->addMotion(FUN_ROPE, 5, true);
                         animal->addStatus(STATUS_FULLNESS, -5);
                         animal->addStatus(STATUS_JOY, 10);
                         animal->addStatus(STATUS_EXP, 10);
@@ -794,6 +808,7 @@ void UIManager::TouchesEnded(CCLayer* pLayer, CCSet *pTouches, CCEvent *pEvent)
             pUILayer->getChildByTag(BTN_OPTION)->setScale(1.f);
             pUILayer->getChildByTag(BTN_FRIENDS)->setScale(1.f);
             pUILayer->getChildByTag(BTN_MULTI_PRACTICE)->setScale(1.f);
+            pUILayer->getChildByTag(BTN_CREATE_ANIMAL)->setScale(1.f);
         }
 		break;
 	}

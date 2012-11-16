@@ -117,13 +117,17 @@ void InGameScene::frame(float dt)
         point.y += WINSIZE_Y/2;
         
 		Animal* animal = pData->getAnimalByAnimalKey(accountKey, pData->getPointedAnimal(accountKey));
-		if(animal->getMotionState() != STAND )
+		if(animal->getMotionState().name != STAND )
 		{
-			animal->getSprite()->stopAllActions();
+            if(!animal->getMotionState().isOrder)
+                animal->getSprite()->stopAllActions();
 			animal->cancelAllMotions();
 		}
-		animal->runActionWithMotion(STAND);
-		animal->getSprite()->setPosition(point);
+        if(!animal->getMotionState().isOrder)
+        {
+            animal->runActionWithMotion(STAND);
+            animal->getSprite()->setPosition(point);
+        }
 	}
     if( getChildByTag(ICON_QUESTION)->isVisible() )
     {
@@ -467,7 +471,7 @@ void InGameScene::callbackOnVoiceRecognitionResult(CCObject* paramObj) {
         //question mark
         pUI->setQuestion(this, who);
     } else {
-        pData->getAnimalByAnimalKey(accountKey, who)->doAction(action);
+        pData->getAnimalByAnimalKey(accountKey, who)->doAction(action, true);
     }
 }
 

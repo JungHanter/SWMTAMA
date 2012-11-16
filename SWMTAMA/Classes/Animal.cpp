@@ -55,7 +55,7 @@ void Animal::finishChk(cocos2d::CCNode *node)
 //#define ITERATE_MOTION
 #define MOVE_WITH_AI
 #ifdef REPLAY_LAST_MOTION
-	switch( motionState )
+	switch( motionState.name )
 	{
 	case WALK:
 		step = FORWARD_LEFT;
@@ -95,7 +95,7 @@ void Animal::finishChk(cocos2d::CCNode *node)
 #endif
 #ifdef ITERATE_MOTION
 
-	switch( motionState )
+	switch( motionState.name )
 	{
 	case WALK:
 		step = BACK_LEFT;
@@ -137,10 +137,10 @@ void Animal::finishChk(cocos2d::CCNode *node)
 	if( motionQueue.empty() )
 	{
 		runActionWithMotion(STAND);
-		addMotion(WALK_LEFT, rand()%3+1);
-		addMotion(WALK_RIGHT, rand()%3+1);
-		addMotion(WALK_BACK_RIGHT, rand()%3+1);
-		addMotion(WALK_BACK_LEFT, rand()%3+1);
+		addMotion(WALK_LEFT, rand()%3+1, false);
+		addMotion(WALK_RIGHT, rand()%3+1, false);
+		addMotion(WALK_BACK_RIGHT, rand()%3+1,false);
+		addMotion(WALK_BACK_LEFT, rand()%3+1, false);
 		return;
 	}
 	MOTIONPACK *nextMotion = motionQueue.front();
@@ -156,12 +156,13 @@ void Animal::finishChk(cocos2d::CCNode *node)
 		}
 		nextMotion = motionQueue.front();
 	}
+    motionState.isOrder = nextMotion->isOrder;
 	nextMotion->num_of_repeat--;
 	runActionWithMotion(nextMotion->name);
 #endif
 }
 
-void Animal::addMotion(MOTION name, short num_of_repeat, bool cleanQueue)
+void Animal::addMotion(MOTION name, short num_of_repeat, bool isOrder, bool cleanQueue)
 {
 	MOTIONPACK *pack = new MOTIONPACK;
 
@@ -179,10 +180,12 @@ void Animal::addMotion(MOTION name, short num_of_repeat, bool cleanQueue)
 
 	pack->name = name;
 	pack->num_of_repeat = num_of_repeat;
-
+    pack->isOrder = isOrder;
+    
     if(cleanQueue)
     {
-        pBody->stopAllActions();
+        if(!motionQueue.front()->isOrder)
+            pBody->stopAllActions();
         cancelAllMotions();
     }
 	motionQueue.push(pack);
@@ -190,7 +193,7 @@ void Animal::addMotion(MOTION name, short num_of_repeat, bool cleanQueue)
 
 void Animal::addMotion(MOTIONPACK pack, bool cleanQueue)
 {
-	addMotion(pack.name, pack.num_of_repeat, cleanQueue);
+	addMotion(pack.name, pack.num_of_repeat, pack.isOrder, cleanQueue);
 }
 
 MOTION Animal::getDefaultMotion(int action)
@@ -215,7 +218,7 @@ MOTION Animal::getDefaultMotion(int action)
     }
 }
 
-void Animal::doAction(int action, int num_of_repeat)
+void Animal::doAction(int action, bool isOrder)
 {
     //pBody->stopAllActions();
     cancelAllMotions();
@@ -226,16 +229,16 @@ void Animal::doAction(int action, int num_of_repeat)
         case ACTION_BASIC_CURE:
             break;
         case ACTION_BASIC_EAT:
-            addMotion(EAT, 5);
+            addMotion(EAT, 5, isOrder);
             break;
         case ACTION_BASIC_REST:
-            addMotion(SIT, 5);
+            addMotion(SIT, 5, isOrder);
             break;
         case ACTION_BASIC_RUN:
-            addMotion(RUN_LEFT, 5);
+            addMotion(RUN_LEFT, 5, isOrder);
             break;
         case ACTION_BASIC_SLEEP:
-            addMotion(SLEEP, 10);
+            addMotion(SLEEP, 10, isOrder);
             break;
         case ACTION_BASIC_STOP:
             break;
@@ -246,15 +249,15 @@ void Animal::doAction(int action, int num_of_repeat)
         case ACTION_TRAINING_CLEANPOOP:
             break;
         case ACTION_TRAINING_ROPE:
-            addMotion(FUN_ROPE, 5);
+            addMotion(FUN_ROPE, 5, isOrder);
             break;
         case ACTION_TRAINING_RUNNING:
-            addMotion(FUN_RUNNING, 5);
+            addMotion(FUN_RUNNING, 5, isOrder);
             break;
         case ACTION_PLAYING_PLAY:
             break;
         case ACTION_PLAYING_SWING:
-            addMotion(FUN_SWING, 5);
+            addMotion(FUN_SWING, 5, isOrder);
             break;
         case ACTION_EXTRA_DIE:
            break;
@@ -268,6 +271,8 @@ void Animal::cancelAllMotions()
 {
 	while( !motionQueue.empty() )
 	{
+        if( motionQueue.front()->isOrder )
+            break;
 		delete motionQueue.front();
 		motionQueue.pop();
 	}
@@ -346,7 +351,7 @@ void Animal::runActionWithMotion(MOTION motion)
 			CCCallFuncN::actionWithTarget(this, callfuncN_selector(Animal::finishChk)), NULL);
 		break;
 	}
-	motionState = motion;
+	motionState.name = motion;
 	pBody->runAction(action);
 }
 
@@ -448,7 +453,7 @@ STATUSINFO Animal::getStatus()
 
 void Animal::frame(float dt)
 {
-    if( info.status.exp == 100 )
+    if( info.status.exp >= 100 )
     {
         info.level++;
         info.status.exp = 0;
@@ -466,7 +471,7 @@ void Animal::setSprite(cocos2d::CCSprite *pBody)
 }
 
 
-MOTION Animal::getMotionState()
+MOTIONPACK Animal::getMotionState()
 {
 	return motionState;
 }
