@@ -8,6 +8,7 @@ import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.StringTokenizer;
 
@@ -94,6 +95,7 @@ public class AnimalInfo implements Comparable<AnimalInfo> {
 			catch(Exception e) {}
 		}
 		
+		Collections.sort(arrVoiceNames);
 		return arrVoiceNames;
 	}
 	
@@ -173,7 +175,7 @@ public class AnimalInfo implements Comparable<AnimalInfo> {
 		return ( id - another.id );
 	}
 	
-	public class AnimalAction {
+	public class AnimalAction{
 		final int actionId;
 		final ArrayList<ActionVoice> arrActionVoice;
 		int actionCount;
@@ -271,9 +273,6 @@ public class AnimalInfo implements Comparable<AnimalInfo> {
 			return sum;
 		}
 		
-		public int getCount() {
-			return actionCount;
-		}
 		
 		public class ActionVoice implements Comparable<ActionVoice> {
 			final String voice;
