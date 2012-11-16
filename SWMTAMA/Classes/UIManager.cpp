@@ -554,11 +554,13 @@ void UIManager::createAnimal(CCLayer *pLayer)
 //    int animalKey = pData->getNewAnimalKey(accountKey);
     char s[256] = {0,};
     strcpy( s, ((CCLabelTTF*)(pLayer->getChildByTag(CREATE_LABEL_NAME)))->getString() );
+    InGameScene *pMainLayer = (InGameScene*)(CCDirector::sharedDirector()->getRunningScene()->getChildByTag(TAG_INGAMELAYER));
+    pMainLayer->makeAnimal2();
 //    int animalKey = ((InGameScene*)pLayer)->makeAnimal(s);
     int animalKey = 4;
     
     //error ToT , hanter 
-    ((InGameScene*)pLayer)->stopVoiceRecognition();
+    pMainLayer->stopVoiceRecognition();
     
 //    pLayer->runAction(CCCallFunc::create(pLayer, callfunc_selector(InGameScene::makeAnimal2)));
     
