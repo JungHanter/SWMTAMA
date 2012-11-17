@@ -158,13 +158,23 @@ void LoginScene::callTryLogin(CCObject *sender)
     
     pLayer->getNetworkManager()->postMessage(URL_LOGIN, body.data(), this, callfuncND_selector(LoginScene::onHttpRequestCompleted), "URL_LOGIN");
     
-//    pLayer->getNetworkManager()->postMessage(URL_CREATE_ANIMAL, "accountKey=0&animalKey=0&name=뽀비", this, callfuncND_selector(LoginScene::onHttpRequestCompleted), "URL_CREATE_ANIMAL");
+//    // URL CREATE ID
+//    pLayer->getNetworkManager()->postMessage(URL_CREATE_ID, "userid=plulena&password=1234", this, callfuncND_selector(LoginScene::onHttpRequestCompleted), "URL_CREATE_ID");
 //
-//    pLayer->getNetworkManager()->postMessage(URL_ANIMAL_MANAGE, "sleep=80&poop=80&exp=80&fullness=80&health=80&joy=80&animalKey=100", this, callfuncND_selector(LoginScene::onHttpRequestCompleted), "URL_ANIMAL_MANAGE");
-//    // success, fail
+//    // URL CREATE ANIMAL
+//    pLayer->getNetworkManager()->postMessage(URL_CREATE_ANIMAL, "animalname=뽀비&accountKey=1&animalKey=1", this, callfuncND_selector(LoginScene::onHttpRequestCompleted), "URL_CREATE_ANIMAL");
 //    
-//    pLayer->getNetworkManager()->postMessage(URL_CREATE_ID, "userid=1&password=1", this, callfuncND_selector(LoginScene::onHttpRequestCompleted), "URL_CREATE_ID");
-//    // accountKey
+//    // URL RECEIVE ANIMAL LIST
+//    pLayer->getNetworkManager()->postMessage(URL_RECEIVE_ANIMALS, "accountKey=1", this, callfuncND_selector(LoginScene::onHttpRequestCompleted), "URL_RECEIVE_ANIMALS");
+//    
+//    // URL RECEIVE FRIEND LIST
+//    pLayer->getNetworkManager()->postMessage(URL_RECEIVE_FRIENDS, "accountKey=1", this, callfuncND_selector(LoginScene::onHttpRequestCompleted), "URL_RECEIVE_FRIENDS");
+//    
+//    // URL ANIMAL MANAGE
+//    pLayer->getNetworkManager()->postMessage(URL_ANIMAL_MANAGE, "level=3&sleep=80&poop=80&exp=80&fullness=80&health=80&joy=80&animalKey=1", this, callfuncND_selector(LoginScene::onHttpRequestCompleted), "URL_ANIMAL_MANAGE");
+//    
+//    // URL ADD FRIEND
+//    pLayer->getNetworkManager()->postMessage(URL_ADD_FRIEND, "myaccountKey=1&newFriend=2", this, callfuncND_selector(LoginScene::onHttpRequestCompleted), "URL_ADD_FRIEND");
     
     CCLog("LoginScene::callTryLogin");
 }

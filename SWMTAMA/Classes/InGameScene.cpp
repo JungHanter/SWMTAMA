@@ -55,18 +55,18 @@ bool InGameScene::init()
 
         
         
-		accountKey = 0;
-		ANIMALINFO animalInfo1( 1, LION, 0, 0, "뽀삐" );
-		pData->makeDataFromAnimalInfo(accountKey, animalInfo1);
-		this->addChild(pData->getAnimalByAnimalKey(accountKey, animalInfo1.key)->getSprite());
-
-        ANIMALINFO animalInfo2( 2, ELEPHANT, 0, 0, "애봉이" );
-		pData->makeDataFromAnimalInfo(accountKey, animalInfo2);
-		this->addChild(pData->getAnimalByAnimalKey(accountKey, animalInfo2.key)->getSprite());
-
-        ANIMALINFO animalInfo3( 3, MONKEY, 0, 0, "초코" );
-		pData->makeDataFromAnimalInfo(accountKey, animalInfo3);
-		this->addChild(pData->getAnimalByAnimalKey(accountKey, animalInfo3.key)->getSprite());
+//		accountKey = 0;
+//		ANIMALINFO animalInfo1( 1, LION, 0, 0, "뽀삐" );
+//		pData->makeDataFromAnimalInfo(accountKey, animalInfo1);
+//		this->addChild(pData->getAnimalByAnimalKey(accountKey, animalInfo1.key)->getSprite());
+//
+//        ANIMALINFO animalInfo2( 2, ELEPHANT, 0, 0, "애봉이" );
+//		pData->makeDataFromAnimalInfo(accountKey, animalInfo2);
+//		this->addChild(pData->getAnimalByAnimalKey(accountKey, animalInfo2.key)->getSprite());
+//
+//        ANIMALINFO animalInfo3( 3, MONKEY, 0, 0, "초코" );
+//		pData->makeDataFromAnimalInfo(accountKey, animalInfo3);
+//		this->addChild(pData->getAnimalByAnimalKey(accountKey, animalInfo3.key)->getSprite());
         
 		schedule(schedule_selector(InGameScene::frame), 1.f/60);
 		
@@ -314,6 +314,12 @@ void InGameScene::onHttpRequestCompleted(cocos2d::CCNode *sender, void *data)
     }
 	CCLog("%s", s.data() );
     CCLog("\n");
+    
+    if( strcmp(response->getHttpRequest()->getTag(), "URL_CREATE_ANIMAL") == 0)
+    {
+        string szAnimalKey = s;
+        CCLog("InGameScene::onHttpRequestCompleted-%s : %s", response->getHttpRequest()->getTag(), szAnimalKey.data() );
+    }
 }
 
 bool InGameScene::onTextFieldAttachWithIME(CCTextFieldTTF* sender)

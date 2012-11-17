@@ -44,7 +44,7 @@ private:
 	bool initTerrain(const char *filename, cocos2d::CCSize winSize);
     bool isInBackground(cocos2d::CCPoint location, float scale);
     
-private:
+public:
     void onHttpRequestCompleted(cocos2d::CCNode *sender, void *data);
     
 //hanter

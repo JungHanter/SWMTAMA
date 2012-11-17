@@ -569,7 +569,8 @@ void UIManager::createAnimal(CCLayer *pLayer)
     pData->makeDataFromAnimalInfo(accountKey, animalInfo);
     CCDirector::sharedDirector()->getRunningScene()->getChildByTag(TAG_INGAMELAYER)->addChild(pData->getAnimalByAnimalKey(accountKey, animalInfo.key)->getSprite());
     
-    
+    // URL CREATE ANIMAL
+    pMainLayer->getNetworkManager()->postMessage(URL_CREATE_ANIMAL, CCString::createWithFormat("animalname=%s&accountKey=%d&animalKey=%d", s, accountKey, animalKey)->getCString(), pMainLayer, callfuncND_selector(InGameScene::onHttpRequestCompleted), "URL_CREATE_ANIMAL");
 }
 
 void UIManager::TouchesMoved(CCLayer* pLayer, CCSet *pTouches, CCEvent *pEvent)
