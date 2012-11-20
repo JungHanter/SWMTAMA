@@ -303,6 +303,7 @@ public class RecognitionManager {
 		mData = RecognizedData.sharedRecognizedData();
 		mData.loadAnimalList();
 		animalList = mData.getAnimalList();
+		mData.loadConjunctions(parent);
 		
 		Log.i("Recognition Manager Init.", "Data Load Done.");
 	}
