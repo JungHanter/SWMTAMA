@@ -8,14 +8,13 @@ import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.StringTokenizer;
 
-import com.swm.vg.voicetoactions.MyUtils;
-
+import android.content.Context;
 import android.util.Log;
-import android.widget.Toast;
+
+import com.swm.vg.voicetoactions.MyUtils;
 
 public class RecognizedData {
 	public final static String DIR_DATA_ROOT = MyUtils.EXT_STORAGE + "/data/com.swm.vg";
@@ -25,6 +24,8 @@ public class RecognizedData {
 	
 	private int lastId = -1;
 	ArrayList<AnimalInfo> animalList = null;
+	
+	Conjunctions cj = null;
 	
 	
 	public int addAnimal(String name) {
@@ -112,6 +113,19 @@ public class RecognizedData {
 		}
 		
 		return animalList;
+	}
+	
+	public void loadConjunctions(Context ctx) {
+		cj = new Conjunctions();
+		cj.loadConjunctions(ctx);
+	}
+	
+	public ArrayList<String> getNegativeConjunctions() {
+		return cj.getNegatives();
+	}
+	
+	public ArrayList<String> getAnds(){
+		return cj.getAnds();
 	}
 	
 	private static RecognizedData mInstance = null;

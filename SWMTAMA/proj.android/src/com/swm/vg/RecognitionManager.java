@@ -63,6 +63,15 @@ public class RecognitionManager {
 		}
 	}
 	
+	private void analyzeCommunicateResults(ArrayList<String> results) {
+		ArrayList<ActionInfo> actionList = PatternMatcher2.searchAll(results, animalList);
+		final int extra = -1;
+		
+		for(ActionInfo action : actionList) {
+			Log.d("Analyze recognition", "who="+action.animalId+"/action="+action.actionId);
+			callbackOnVoiceRecognitionResult(action.animalId, action.actionId, extra);
+		}
+	}
 	
 	
 	//WITH COCOS2DX METHOD
@@ -324,7 +333,8 @@ public class RecognitionManager {
 			} else {
 				Log.d("VoiceRecognitionListener", "onResults - " + results.get(0));
 				callbackHandler.sendMessage(Message.obtain(callbackHandler, CALLBACK_TEST_TEXT, (Object)results.get(0)));
-				analyzeCommunicateResult(results.get(0));
+//				analyzeCommunicateResult(results.get(0));
+				analyzeCommunicateResults(results);
 			}
 		}
 
