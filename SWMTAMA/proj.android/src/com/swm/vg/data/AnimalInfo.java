@@ -41,7 +41,13 @@ public class AnimalInfo implements Comparable<AnimalInfo> {
 			plusVoice = null;
 			if(!arrVoiceNames.contains(voice)) {
 				if(voice.endsWith("이")) {
+					//'이'로끝나면 ~아/~ 이걸로도 되게
+					//ex) 애봉이 -> 애봉아/애봉
 					plusVoice = voice.substring(0, voice.length()-1) + "아";
+					if(!arrVoiceNames.contains(plusVoice)) {
+						arrVoiceNames.add(plusVoice); 
+					}
+					plusVoice = voice.substring(0, voice.length()-1);
 					if(!arrVoiceNames.contains(plusVoice)) {
 						arrVoiceNames.add(plusVoice); 
 					}
@@ -251,6 +257,20 @@ public class AnimalInfo implements Comparable<AnimalInfo> {
 				arrActionVoice.add( new ActionVoice(convertVoice));
 		}
 		
+		private void addActionVoiceConvert(String addingVoice, String postfix, int exceptNum) {
+			String convertVoice = addingVoice.substring(0, addingVoice.length()-exceptNum) + postfix;	//먹어->먹으, 먹자->먹으 등
+			boolean bAlreadyExist = false;
+			for(ActionVoice actionVoice : arrActionVoice) {
+				if(actionVoice.getVoiceString().equals(convertVoice)) {
+					actionVoice.addCount();
+					bAlreadyExist = true;
+					break;
+				}
+			}
+			if(!bAlreadyExist)
+				arrActionVoice.add( new ActionVoice(convertVoice));
+		}
+		
 		public void addActionVoice(ArrayList<String> arrVoiceString) {
 			int size = arrVoiceString.size();
 			boolean bNeedSort = false, bAlreadyExist = false;;
@@ -268,14 +288,21 @@ public class AnimalInfo implements Comparable<AnimalInfo> {
 				if(!bAlreadyExist) {
 					arrActionVoice.add( new ActionVoice(nowVoice) );
 					
-					//접속사를 위해서
+					//TODO 접속사를 위해서
 					if(nowVoice.endsWith("어")) {
 						addActionVoiceConvert(nowVoice, 1);
+						addActionVoiceConvert(nowVoice, "으", 1);
 					} else if(nowVoice.endsWith("자")) {
 						addActionVoiceConvert(nowVoice, 1);
+						addActionVoiceConvert(nowVoice, "으", 1);
 					} else if(nowVoice.endsWith("어라")) {
 						addActionVoiceConvert(nowVoice, 2);
 					} else if(nowVoice.endsWith("해")) {
+						addActionVoiceConvert(nowVoice, 1);
+					} else if(nowVoice.endsWith("었")) {
+						addActionVoiceConvert(nowVoice, 1);
+						addActionVoiceConvert(nowVoice, "으", 1);
+					} else if(nowVoice.endsWith("거")) {
 						addActionVoiceConvert(nowVoice, 1);
 					}
 					//일단 이정도만?

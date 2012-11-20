@@ -16,6 +16,7 @@ import com.swm.vg.data.ActionInfo;
 import com.swm.vg.data.AnimalInfo;
 import com.swm.vg.data.RecognizedData;
 import com.swm.vg.voicetoactions.PatternMatcher;
+import com.swm.vg.voicetoactions.PatternMatcher2;
 import com.swm.vg.voicetoactions.VoiceRecognizer;
 import com.swm.vg.voicetoactions.VoiceRecognizerListener;
 
@@ -47,8 +48,19 @@ public class RecognitionManager {
 		ActionInfo action = PatternMatcher.patternMatch(result, animalList);
 		final int extra = -1;
 		
-		callbackHandler.sendMessage(Message.obtain(callbackHandler,CALLBACK_RECOG_RESULT,
-				action.animalId, action.actionId, Integer.valueOf(extra)));
+//		callbackHandler.sendMessage(Message.obtain(callbackHandler,CALLBACK_RECOG_RESULT,
+//				action.animalId, action.actionId, Integer.valueOf(extra)));
+		callbackOnVoiceRecognitionResult(action.animalId, action.actionId, -1);
+	}
+	
+	private void analyzeCommunicateResults(ArrayList<String> results) {
+		//먼저 동물이름 있는지 검사하자
+		ArrayList<ActionInfo> actionList = PatternMatcher2.searchAll(results, animalList);
+		final int extra = -1;
+		
+		for(ActionInfo action : actionList) {
+			callbackOnVoiceRecognitionResult(action.animalId, action.actionId, -1);
+		}
 	}
 	
 	
@@ -259,6 +271,7 @@ public class RecognitionManager {
 		mData = RecognizedData.sharedRecognizedData();
 		mData.loadAnimalList();
 		animalList = mData.getAnimalList();
+		mData.loadConjunctions(parent);
 		
 		Log.i("Recognition Manager Init.", "Data Load Done.");
 		
@@ -291,7 +304,8 @@ public class RecognitionManager {
 			} else {
 				Log.d("VoiceRecognitionListener", "onResults - " + results.get(0));
 				callbackHandler.sendMessage(Message.obtain(callbackHandler, CALLBACK_TEST_TEXT, (Object)results.get(0)));
-				analyzeCommunicateResult(results.get(0));
+//				analyzeCommunicateResult(results.get(0));
+				analyzeCommunicateResults(results);
 			}
 		}
 
@@ -423,7 +437,7 @@ public class RecognitionManager {
 
 		@Override
 		public void onError(int error) {
-			showErrorMessage(error);
+//			showErrorMessage(error);
 //			callbackOnRecognitionIdle();
 			callbackHandler.sendMessage(Message.obtain(callbackHandler, CALLBACK_RECOG_IDLE));
 		}

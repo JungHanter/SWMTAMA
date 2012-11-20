@@ -152,7 +152,10 @@ void LoginScene::onHttpRequestCompleted(cocos2d::CCNode *sender, void *data)
             SceneManager::sharedSceneManager()->setUserAccountKey(atoi(szAccountKey.data()));
             SceneManager::sharedSceneManager()->setHostAccountKey(atoi(szAccountKey.data()));
             
-            CCScene* pScene = LoadingScene::scene();
+            CCScene* pScene = LoadingScene::getLoadingScene();
+            if( pScene == NULL )
+                pScene = LoadingScene::scene();
+            
             pNetwork->postMessage(URL_RECEIVE_ANIMALS, CCString::createWithFormat("accountKey=%s", szAccountKey.data())->getCString(), (CCLayer*)(pScene->getChildByTag(LOADING)), callfuncND_selector(LoadingScene::onHttpRequestCompleted), "URL_RECEIVE_ANIMALS");
             
             CCDirector::sharedDirector()->replaceScene(pScene);
@@ -184,10 +187,40 @@ void LoginScene::callTryLogin(CCObject *sender)
     switch (tag) {
         case BTN_HOUSE_LOGIN:
             pLayer->getNetworkManager()->postMessage(URL_LOGIN, body.data(), this, callfuncND_selector(LoginScene::onHttpRequestCompleted), "URL_LOGIN");
+//        {
+//            ANIMALINFO info;
+//            
+//            info.key = 1;
+//            info.name = "뽀삐";
+//            info.type = LION;
+//            info.level = 7;
+//            pData->makeDataFromAnimalInfo(0, info);
+//            
+//            info.key = 2;
+//            info.name = "하늘";
+//            info.type = ELEPHANT;
+//            info.level = 5;
+//            pData->makeDataFromAnimalInfo(0, info);
+//            
+//            info.key = 3;
+//            info.name = "초코";
+//            info.type = MONKEY;
+//            info.level = 5;
+//            pData->makeDataFromAnimalInfo(0, info);
+//            
+//            info.key = 4;
+//            info.name = "네티";
+//            info.type = SQUIRREL;
+//            info.level = 4;
+//            pData->makeDataFromAnimalInfo(0, info);
+//            
+////            CCDirector::s
+//            
+//        }
             break;
             
         case BTN_HOUSE_CREATE:
-            pLayer->getNetworkManager()->postMessage(URL_CREATE_ID, body.data(), this, callfuncND_selector(LoginScene::onHttpRequestCompleted), "URL_CREATE_ID");
+//            pLayer->getNetworkManager()->postMessage(URL_CREATE_ID, body.data(), this, callfuncND_selector(LoginScene::onHttpRequestCompleted), "URL_CREATE_ID");
             break;
     }
     CCLog("body : %s",body.data());
