@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="isometric" width="40" height="40" tilewidth="64" tileheight="32">
+<map version="1.0" orientation="isometric" width="20" height="20" tilewidth="64" tileheight="32">
  <tileset firstgid="1" name="iso-64x64-outside" tilewidth="64" tileheight="32">
   <image source="iso-64x64-outside.png" width="640" height="1024"/>
  </tileset>
- <layer name="Copy of background" width="40" height="40" visible="0">
+ <layer name="Copy of background" width="20" height="20" visible="0">
   <data encoding="base64" compression="zlib">
-   eJztzrENACAQxLDvmYka2H8hWIGKk3Ck9K6Scmph8/Hx8fHx8fHx8SXNx8fHx5fnW3x8fHwf+voj37x4nDevhDzs
+   eJxjYBgF1ATcFOJR80bNGzVv1LyhYh4ARdULAQ==
   </data>
  </layer>
- <layer name="background" width="40" height="40">
+ <layer name="background" width="20" height="20">
   <data encoding="base64" compression="zlib">
-   eJztzqENAAAMw7Dy/f/v3ghwpHBvUqeLzcfHx8fHx8fHx1eaj4+Pj4+Pj4+Pr3Td92t/N7E=
+   eJxjYBgF1ATcFOJR80bNGzVv1LyhYh4ARdULAQ==
   </data>
  </layer>
- <objectgroup name="Object Layer 1" width="40" height="40" visible="0"/>
- <layer name="object" width="40" height="40">
+ <objectgroup name="Object Layer 1" width="20" height="20" visible="0"/>
+ <layer name="object" width="20" height="20">
   <data encoding="base64" compression="zlib">
-   eJzdlzlLBDEUx7Niv2jhUbmehUe3aqd+GS28C0U7xU5x6/0SHnj0Fhb6KQQbEWxkQVZ0Qd+DN2wIL+eMIe4ffmQcNsnPZCaTlEtClBNCDd4bTAzObzQxOL+ZxOD85hOD80spqfmdKH+n5qfG168GvAT2NRDwv/v6HQB14N2zn35qd4Rpv1agHz4fx55ufdTmMJXTTB91Kg9z+PV6emGysalQu1NUzjnOte/4hThmYzNJbc9SueTgGPv9rVL7i1B+Ovw+pl+DWIA+mnSvy9JfLL8GlS0CUzL0la3TLn7jwISHi/oNyIJe35KfHN1c2/zQbQioeDra0mTucXNt8xsDqkBPgW5ZTPPr6qfLJrAOrAIbwJpDnWXNfdP3Ms/7sQ+sADvAHrDrUGdLuv6SrnXfyzx++KzjmGzTdUi6I6wvoW4u6bT9X+yY/Ez7slixjV+drxYtseb3KLBezOfvNKDOf34/Ukin+eGa8wQ8E5iG/udR/T6oxDXnFXgj0K8l2nt317isrzo/3ANz5/0f4Ba4Ia4kPyH4vbEptvVV52c6718Dl8S5aO/Z5fNPkVH9bOf9C+CB/B6Be8Gff4qMOn628z46nhF3oj3HuvNPEcn8dOd9Xbix053h8kZ9f+Xzvil/NXa/mzCJjw==
+   eJzjZ2Rg4KcAowOQmCSFGJt5yhRibObpUoixmWdOIcZmHiWAUvN6gfgZAfOOAMUPE2lePRBPB+IPeMw7BBTfT6R5XUDcScB9lICBNE+IBu4jZOZwCj9iASHzVIFYjUQzcZkHMkseiBXIMBObeSpAbALEgiSaBQOUhh8AlpUeww==
   </data>
  </layer>
 </map>

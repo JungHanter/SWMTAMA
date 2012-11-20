@@ -615,13 +615,13 @@ void Animal::frame(float dt)
             info.status.joy -= rand()%10 + 5;
         else
         {
-            int chap = rand()%3;
-            if( chap == 0 )
-                doAction(ACTION_PLAYING_SWING, true);
-            else if( chap == 1 )
-                doAction(ACTION_TRAINING_RUNNING, true);
-            else
-                doAction(ACTION_TRAINING_ROPE, true);
+//            int chap = rand()%3;
+//            if( chap == 0 )
+//                doAction(ACTION_PLAYING_SWING, true);
+//            else if( chap == 1 )
+//                doAction(ACTION_TRAINING_RUNNING, true);
+//            else
+//                doAction(ACTION_TRAINING_ROPE, true);
         }
     }
     if( state.timerSleepy > 300.f )
