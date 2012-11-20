@@ -1236,7 +1236,7 @@ void UIManager::TouchesEnded(CCLayer* pLayer, CCSet *pTouches, CCEvent *pEvent)
                 {
                     if( pLayer->getChildByTag(ICON_MEAT)->boundingBox().containsPoint(point) )
                     {
-                        animal->cancelAllMotions();
+                        animal->cancelAllMotions(0);
                         animal->addMotion(EAT, 5, true);
                         animal->addStatus(STATUS_FULLNESS, 20);
                         animal->addStatus(STATUS_POOP, 30);
@@ -1244,7 +1244,7 @@ void UIManager::TouchesEnded(CCLayer* pLayer, CCSet *pTouches, CCEvent *pEvent)
                     }
                     if( pLayer->getChildByTag(ICON_SWING)->boundingBox().containsPoint(point) )
                     {
-                        animal->cancelAllMotions();
+                        animal->cancelAllMotions(0);
                         animal->addMotion(FUN_SWING, 5, true);
                         animal->addStatus(STATUS_JOY, 30);
                         animal->addStatus(STATUS_FULLNESS, -20);
@@ -1252,7 +1252,7 @@ void UIManager::TouchesEnded(CCLayer* pLayer, CCSet *pTouches, CCEvent *pEvent)
                     }
                     if( pLayer->getChildByTag(ICON_RUNNING)->boundingBox().containsPoint(point) )
                     {
-                        animal->cancelAllMotions();
+                        animal->cancelAllMotions(0);
                         animal->addMotion(FUN_RUNNING, 5, true);
                         animal->addStatus(STATUS_JOY, 30);
                         animal->addStatus(STATUS_FULLNESS, -20);
@@ -1260,7 +1260,7 @@ void UIManager::TouchesEnded(CCLayer* pLayer, CCSet *pTouches, CCEvent *pEvent)
                     }
                     if( pLayer->getChildByTag(ICON_ROPE)->boundingBox().containsPoint(point) )
                     {
-                        animal->cancelAllMotions();
+                        animal->cancelAllMotions(0);
                         animal->addMotion(FUN_ROPE, 5, true);
                         animal->addStatus(STATUS_JOY, 30);
                         animal->addStatus(STATUS_FULLNESS, -20);

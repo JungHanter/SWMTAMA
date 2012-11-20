@@ -467,7 +467,7 @@ public class RecognitionManager {
 
 		@Override
 		public void onError(int error) {
-			showErrorMessage(error);
+//			showErrorMessage(error);
 //			callbackOnRecognitionIdle();
 			callbackHandler.sendMessage(Message.obtain(callbackHandler, CALLBACK_RECOG_IDLE));
 		}

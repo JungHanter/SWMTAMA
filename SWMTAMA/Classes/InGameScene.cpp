@@ -560,6 +560,9 @@ void InGameScene::callbackOnVoiceRecognitionResult(CCObject* paramObj) {
     //who부터 있는지 검사해야함
     if( who == -1 ) return;
     
+    //zz
+    if( who > 4 ) return;
+    
     //    param->release();
     if(action == ACTION_EXTRA_UNKNOWN) {
         //question mark

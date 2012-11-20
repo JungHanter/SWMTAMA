@@ -295,8 +295,9 @@ MOTION Animal::getDefaultMotion(int action)
 
 void Animal::doAction(int action, bool isOrder)
 {
-    //pBody->stopAllActions();
-    cancelAllMotions();
+//    if( isOrder && motionQueue.front()->isOrder == false )
+//        pBody->stopAllActions();
+    cancelAllMotions(0);
     
     switch (action) {
         case ACTION_BASIC_COME:
@@ -349,28 +350,38 @@ void Animal::doAction(int action, bool isOrder)
         case ACTION_TRAINING_CLEANPOOP:
             break;
         case ACTION_TRAINING_ROPE:
-            addMotion(FUN_ROPE, 3, isOrder);
+            addMotion(FUN_ROPE, 10, isOrder);
             addStatus(STATUS_JOY, 50);
             addStatus(STATUS_HEALTH, 30);
             addStatus(STATUS_FULLNESS, -20);
             addStatus(STATUS_EXP, 20);
             break;
         case ACTION_TRAINING_RUNNING:
-            addMotion(FUN_RUNNING, 3, isOrder);
+            addMotion(FUN_RUNNING, 10, isOrder);
             addStatus(STATUS_JOY, 50);
             addStatus(STATUS_HEALTH, 30);
             addStatus(STATUS_FULLNESS, -20);
             addStatus(STATUS_EXP, 20);
             break;
         case ACTION_PLAYING_PLAY:
-            addMotion(FUN_ROPE, 3, isOrder);
+            switch (rand()%3) {
+                case 0:
+                    addMotion(FUN_ROPE, 10, isOrder);
+                    break;
+                case 1:
+                    addMotion(FUN_SWING, 10, isOrder);
+                    break;
+                case 2:
+                    addMotion(FUN_RUNNING, 10, isOrder);
+                    break;
+            }
             addStatus(STATUS_JOY, 50);
             addStatus(STATUS_HEALTH, 30);
             addStatus(STATUS_FULLNESS, -20);
             addStatus(STATUS_EXP, 20);
             break;
         case ACTION_PLAYING_SWING:
-            addMotion(FUN_SWING, 3, isOrder);
+            addMotion(FUN_SWING, 10, isOrder);
             addStatus(STATUS_JOY, 50);
             addStatus(STATUS_HEALTH, 30);
             addStatus(STATUS_FULLNESS, -20);
