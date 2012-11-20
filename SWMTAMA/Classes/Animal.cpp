@@ -116,7 +116,6 @@ bool Animal::initiate(ANIMALINFO animalInfo)
     stateIndex = 0;
     timer = 0.f;
     
-    pBody->setPosition(ccp(rand()%30,rand()%30));
 	return true;
 }
 

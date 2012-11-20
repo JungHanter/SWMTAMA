@@ -272,8 +272,8 @@ bool InGameScene::initTerrain(const char *filename, cocos2d::CCSize winSize)
 	
 	if( !pTerrain ) return false;
 
-	pTerrain->setScaleX(2*GAME_SCALE*WINSIZE_X/sizeTerrain.width);
-	pTerrain->setScaleY(2*GAME_SCALE*WINSIZE_X/sizeTerrain.width);
+	pTerrain->setScaleX(GAME_SCALE*WINSIZE_X/sizeTerrain.width);
+	pTerrain->setScaleY(GAME_SCALE*WINSIZE_X/sizeTerrain.width);
 	pTerrain->setAnchorPoint(ccp(0.5f, 0.5f));
 	pTerrain->setPosition(ccp(WINSIZE_X/2, 0));
 	this->addChild(pTerrain, 0.5);

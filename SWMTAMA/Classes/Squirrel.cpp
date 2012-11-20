@@ -31,5 +31,7 @@ bool Squirrel::makeAnimates()
 	makeAnimateWithImage("SQUIRREL_RUNNING", FUN_RUNNING);
 	makeAnimateWithImage("SQUIRREL_ROPE", FUN_ROPE);
     
+    pBody->setPosition(ccp(-10,10));
+    
 	return true;
 }

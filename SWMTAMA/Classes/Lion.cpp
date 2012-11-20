@@ -31,5 +31,6 @@ bool Lion::makeAnimates()
 	makeAnimateWithImage("LION_RUNNING", FUN_RUNNING);
 	makeAnimateWithImage("LION_ROPE", FUN_ROPE);
 
+    pBody->setPosition(ccp(10,-10));
 	return true;
 }

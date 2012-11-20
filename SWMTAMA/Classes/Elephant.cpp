@@ -31,5 +31,6 @@ bool Elephant::makeAnimates()
 	makeAnimateWithImage("ELEPHANT_RUNNING", FUN_RUNNING);
 	makeAnimateWithImage("ELEPHANT_ROPE", FUN_ROPE);
 
+    pBody->setPosition(ccp(10,10));
 	return true;
 }
