@@ -1,5 +1,7 @@
 #include "LoginScene.h"
 #include "InGameScene.h"
+#include "SceneManager.h"
+#include "LoadingScene.h"
 
 using namespace cocos2d;
 using namespace cocos2d::extension;
@@ -30,23 +32,24 @@ bool LoginScene::init()
 	{
 		CC_BREAK_IF(! CCLayer::init());
         
-        CC_BREAK_IF( !initBackground(this, "greenhill.png", CCSize(WINSIZE_X, WINSIZE_Y)) );
+        CC_BREAK_IF( !initBackground(this, "title_login.png", CCSize(WINSIZE_X, WINSIZE_Y)) );
         
-        pUI = UIManager::create();
-		pUI->init();
-		pUI->setDataManager(pData);
+        SceneManager::sharedSceneManager()->setDataManager(this);
+        
 		CC_BREAK_IF( !pUI->loadUI(this, LOGIN) );
         
-        pNetwork = NetworkManager::create();
         this->setTouchEnabled(true);
         this->setKeypadEnabled(true);
         
         userID = CCLabelTTF::create("", "Arial", 48);
-        userID->setPosition(ccp(WINSIZE_X*0.25f, WINSIZE_Y*0.8f));
+        userID->setPosition(ccp(WINSIZE_X*0.875f, WINSIZE_Y*0.7f));
+        userID->setColor(ccBLACK);
         addChild(userID);
         
         userPW = CCLabelTTF::create("", "Arial", 48);
-        userPW->setPosition(ccp(WINSIZE_X*0.25f, WINSIZE_Y*0.6f));
+        userPW->setPosition(ccp(WINSIZE_X*0.875f, WINSIZE_Y*0.55f));
+        userPW->setColor(ccBLACK);
+        userPW->setVisible(false);
         addChild(userPW);
         
         tfID = CCTextFieldTTF::textFieldWithPlaceHolder("", CCSizeMake(200, 20), kCCTextAlignmentLeft, "Arial", 12);
@@ -126,27 +129,49 @@ void LoginScene::onHttpRequestCompleted(cocos2d::CCNode *sender, void *data)
     
     // dump data
     std::vector<char> *buffer = response->getResponseData();
-	std::string s = "";
+	std::string s;
+    bool isDataStarted = false;
     for (unsigned int i = 0; i < buffer->size(); i++)
-		s += (*buffer)[i];
-	CCLog("%s", s.data() );
+	{
+        if( isDataStarted == false && !isspace((*buffer)[i]) )
+            isDataStarted = true;
+        if( isDataStarted == false) continue;
+        
+        s += (*buffer)[i];
+    }
+	CCLog("LoginScene::onHttpRequestCompleted : buffer=%s", s.data() );
     
-    if( strcmp(response->getHttpRequest()->getTag(), "URL_LOGIN") == 0)
+    if(strcmp(response->getHttpRequest()->getTag(), "URL_LOGIN") == 0)
     {
         int delimIndex = s.find('|');
         string szAccountKey = s.substr(0, delimIndex);
         string szResult = s.substr(delimIndex+1);
         
-        CCLog("%s Result=%s", szAccountKey.data(), szResult.data() );
         if( szResult.find("login") == 0 )
         {
-            CCDirector::sharedDirector()->replaceScene(InGameScene::scene());
+            SceneManager::sharedSceneManager()->setUserAccountKey(atoi(szAccountKey.data()));
+            SceneManager::sharedSceneManager()->setHostAccountKey(atoi(szAccountKey.data()));
+            
+            CCScene* pScene = LoadingScene::scene();
+            pNetwork->postMessage(URL_RECEIVE_ANIMALS, CCString::createWithFormat("accountKey=%s", szAccountKey.data())->getCString(), (CCLayer*)(pScene->getChildByTag(LOADING)), callfuncND_selector(LoadingScene::onHttpRequestCompleted), "URL_RECEIVE_ANIMALS");
+            
+            CCDirector::sharedDirector()->replaceScene(pScene);
+            return;
         }
+        CCLog("%s Result=%s", szAccountKey.data(), szResult.data() );
+    }
+    else if(strcmp(response->getHttpRequest()->getTag(), "URL_CREATE_ID") == 0)
+    {
+        getChildByTag(LOGIN_CREATE_BLACKBOARD)->setVisible(true);
+        getChildByTag(LOGIN_CREATE_FRAME_OK)->setVisible(true);
+        getChildByTag(LOGIN_CREATE_TEXT_OK)->setVisible(true);
+        getChildByTag(LOGIN_CREATE_TEXT)->setVisible(true);
     }
 }
 
 void LoginScene::callTryLogin(CCObject *sender)
 {
+    int tag = ((CCMenuItemSprite*)sender)->getTag();
     LoginScene *pLayer = ((LoginScene*)((CCMenuItemLabel*)sender)->getParent()->getParent());
     
     string body = "";
@@ -156,14 +181,21 @@ void LoginScene::callTryLogin(CCObject *sender)
     body += "password=";
     body += userPW->getString();
     
-    pLayer->getNetworkManager()->postMessage(URL_LOGIN, body.data(), this, callfuncND_selector(LoginScene::onHttpRequestCompleted), "URL_LOGIN");
+    switch (tag) {
+        case BTN_HOUSE_LOGIN:
+            pLayer->getNetworkManager()->postMessage(URL_LOGIN, body.data(), this, callfuncND_selector(LoginScene::onHttpRequestCompleted), "URL_LOGIN");
+            break;
+            
+        case BTN_HOUSE_CREATE:
+            pLayer->getNetworkManager()->postMessage(URL_CREATE_ID, body.data(), this, callfuncND_selector(LoginScene::onHttpRequestCompleted), "URL_CREATE_ID");
+            break;
+    }
+    CCLog("body : %s",body.data());
+    
     
 //    // URL CREATE ID
 //    pLayer->getNetworkManager()->postMessage(URL_CREATE_ID, "userid=plulena&password=1234", this, callfuncND_selector(LoginScene::onHttpRequestCompleted), "URL_CREATE_ID");
-//
-//    // URL CREATE ANIMAL
-//    pLayer->getNetworkManager()->postMessage(URL_CREATE_ANIMAL, "animalname=뽀비&accountKey=1&animalKey=1", this, callfuncND_selector(LoginScene::onHttpRequestCompleted), "URL_CREATE_ANIMAL");
-//    
+
 //    // URL RECEIVE ANIMAL LIST
 //    pLayer->getNetworkManager()->postMessage(URL_RECEIVE_ANIMALS, "accountKey=1", this, callfuncND_selector(LoginScene::onHttpRequestCompleted), "URL_RECEIVE_ANIMALS");
 //    
@@ -356,17 +388,15 @@ bool LoginScene::onTextFieldInsertText(CCTextFieldTTF* sender, const char* text,
 {
     switch (sender->getTag()) {
         case LOGIN_TF_ID:
-            if( strcmp(text,"\n") == 0 )
-                userID->setString("ID");
-            else
-                userID->setString(text);
+            userID->setString(text);
             break;
             
         case LOGIN_TF_PW:
-            if( strcmp(text,"\n") == 0 )
-                userPW->setString("ID");
-            else
-                userPW->setString(text);
+            userPW->setString(text);
+            string s ="";
+            for( int i = 0; i < strlen(text); i++)
+                s += '*';
+            ((CCLabelTTF*)getChildByTag(TEXT_PASSWORD))->setString(s.data());
             break;
     }
     

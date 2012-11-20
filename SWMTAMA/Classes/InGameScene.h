@@ -17,12 +17,13 @@ private:
     cocos2d::CCLabelTTF *label_create_animal;
     CCTextFieldTTF *tf_create_animal;
     
-	int accountKey;
+	int hostAccountKey;
 	CCLabelTTF *debugLabel;
 	bool istoucheDelegate;
 	cocos2d::CCPoint lastestTouch;
     CCLabelTTF *debugLabel2;
     static cocos2d::CCLayer *pUILayer;
+    static cocos2d::CCScene *pScene;
     
 public:
 	static cocos2d::CCScene* scene();
@@ -42,11 +43,13 @@ private:
 
 private:
 	bool initTerrain(const char *filename, cocos2d::CCSize winSize);
+    bool initBackground(cocos2d::CCLayer* pLayer, const char *filename, cocos2d::CCSize winSize);
     bool isInBackground(cocos2d::CCPoint location, float scale);
     
 public:
     void onHttpRequestCompleted(cocos2d::CCNode *sender, void *data);
-    
+    void resetScene(int newHostAccountKey);
+    static cocos2d::CCScene* getInGameScene();
 //hanter
 /** game <-> voiceRecognition **/
 public:

@@ -116,6 +116,7 @@ void NetworkManager::postMessage(const char* url, const char* postData, CCLayer*
 	CCHttpRequest* request = new CCHttpRequest();
 	request->setUrl(url);
 	request->setRequestType(CCHttpRequest::kHttpPost);
+    
 	request->setResponseCallback(pLayer, func);
     
     CCLog("NetworkManager::postMessage");

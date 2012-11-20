@@ -1,4 +1,5 @@
 #include "InGameScene.h"
+#include "SceneManager.h"
 
 #include "SimpleAudioEngine.h"
 #include "AppDelegate.h"
@@ -9,6 +10,7 @@ using namespace cocos2d::extension;
 using namespace CocosDenshion;
 
 CCLayer* InGameScene::pUILayer = NULL;
+CCScene* InGameScene::pScene = NULL;
 
 cocos2d::CCScene* InGameScene::scene()
 {
@@ -33,6 +35,7 @@ cocos2d::CCScene* InGameScene::scene()
 		layer->setTag(INGAME);
 		scene->addChild(layer);
         
+        pScene = scene;
         
 	} while(0);
 
@@ -48,11 +51,11 @@ bool InGameScene::init()
         
 		CCSize winSize = CCDirector::sharedDirector()->getWinSize();
 
-		CC_BREAK_IF( !initBackground(this, "background.jpg", winSize) );
+		CC_BREAK_IF( !initBackground(this, "back.png", winSize) );
 		CC_BREAK_IF( !initTerrain("tamagotchi_testmap.tmx", winSize) );
 
-		pData = DataManager::create();
-
+        hostAccountKey = SceneManager::sharedSceneManager()->getHostAccountKey();
+        CCLog("InGameScene::init : hostAccountKey = %d", hostAccountKey);
         
         
 //		accountKey = 0;
@@ -72,19 +75,26 @@ bool InGameScene::init()
 		
 		this->setTouchEnabled(true);
 
-		pUI = UIManager::create();
-		pUI->init();
-		pUI->setDataManager(pData);
+		SceneManager::sharedSceneManager()->setDataManager(this);
+        
+        pData->addChildToLayer(this, hostAccountKey);
+        
 		CC_BREAK_IF( !pUI->loadUI(this, INGAME, pUILayer) );
         
         pUI->setSpeaker(pUILayer, SPEAKER_MUTE);
         
 		debugLabel = CCLabelTTF::create("Test Get", "Arial", 22);
 		debugLabel->setPosition(ccp(WINSIZE_X / 2, WINSIZE_Y - 100));
+#ifndef GAME_DEBUGGER
+        debugLabel->setVisible(false);
+#endif
 		pUILayer->addChild(debugLabel);
 
         debugLabel2 = CCLabelTTF::create("Test Who", "Arial", 22);
 		debugLabel2->setPosition(ccp(WINSIZE_X / 2, WINSIZE_Y - 150));
+#ifndef GAME_DEBUGGER
+        debugLabel2->setVisible(false);
+#endif
         debugLabel2->setTag(9999);
 		pUILayer->addChild(debugLabel2);
         
@@ -93,6 +103,8 @@ bool InGameScene::init()
         
 		istoucheDelegate = false;
 		bRet = true;
+        
+        setScale(1.01f);
         
         initRecognition();
         runAction(CCCallFunc::create(this, callfunc_selector(InGameScene::startVoiceRecognition)));
@@ -104,7 +116,8 @@ bool InGameScene::init()
 
 void InGameScene::frame(float dt)
 {
-	if( istoucheDelegate && pData->getPointedAnimal(accountKey) != -1 )
+    // 1. 동물 끌어다 움직이기
+	if( istoucheDelegate && pData->getPointedAnimal().animalKey != -1 )
 	{
         float scale = getScale();
         CCPoint point = lastestTouch;
@@ -116,7 +129,7 @@ void InGameScene::frame(float dt)
         point.x += WINSIZE_X/2;
         point.y += WINSIZE_Y/2;
         
-		Animal* animal = pData->getAnimalByAnimalKey(accountKey, pData->getPointedAnimal(accountKey));
+		Animal* animal = pData->getAnimalByAnimalKey(pData->getPointedAnimal());
 		if(animal->getMotionState().name != STAND )
 		{
             if(!animal->getMotionState().isOrder)
@@ -129,27 +142,32 @@ void InGameScene::frame(float dt)
             animal->getSprite()->setPosition(point);
         }
 	}
-    if( getChildByTag(ICON_QUESTION)->isVisible() )
+    // 2, 질문이해불가 아이콘이 보일 때
+    if( SceneManager::sharedSceneManager()->isFriendHome() == false )
     {
-        int accountKey = 0;
-        int animalKey = pData->getLastPointedAnimal(accountKey);
-        if( animalKey != -1 )
+        if( getChildByTag(ICON_QUESTION)->isVisible() )
         {
-            static float timer = 0.f;
-            Animal *animal = pData->getAnimalByAnimalKey(accountKey, animalKey);
-            CCPoint questionPos = animal->getSprite()->getPosition();
-            questionPos.y += animal->getSprite()->getContentSize().height;
-            getChildByTag(ICON_QUESTION)->setPosition(questionPos);
-            if( timer > 2.f )
+            ANIMALINDEX index = pData->getLastPointedAnimal();
+            if( index.animalKey != -1 )
             {
-                getChildByTag(ICON_QUESTION)->setVisible(false);
-                timer = 0.f;
+                static float timer = 0.f;
+                Animal *animal = pData->getAnimalByAnimalKey(index);
+                CCPoint questionPos = animal->getSprite()->getPosition();
+                questionPos.y += animal->getSprite()->getContentSize().height;
+                getChildByTag(ICON_QUESTION)->setPosition(questionPos);
+                if( timer > 2.f )
+                {
+                    getChildByTag(ICON_QUESTION)->setVisible(false);
+                    timer = 0.f;
+                }
+                timer += dt;
             }
-            timer += dt;
         }
     }
     pData->frame(this, dt);
-    ((CCLabelTTF*)(pUILayer->getChildByTag(9999)))->setString(CCString::createWithFormat("Last %d", pData->getLastPointedAnimal(0))->getCString());
+    // for debug
+    ((CCLabelTTF*)(pUILayer->getChildByTag(9999)))->setString(CCString::createWithFormat("Last %d", pData->getLastPointedAnimal())->getCString());
+    //
 	pUI->frame(this, dt);
 }
 
@@ -174,17 +192,16 @@ void InGameScene::ccTouchesBegan(CCSet *pTouches, CCEvent *pEvent)
         // 터치된 동물을 찾는다
         if( !getChildByTag(THINK_CLOUD)->isVisible() || (getChildByTag(THINK_CLOUD)->isVisible() && !CCRect::CCRectContainsPoint( getChildByTag(THINK_CLOUD)->boundingBox(), point)) )
         {
-            
-            pData->setPointedAnimal( accountKey, pData->findAnimalRectContainsPoint(accountKey, point) );
+            pData->setPointedAnimal(pData->findAnimalRectContainsPoint(point));
         }
-            
-        
 	}
 	pUI->TouchesBegan(this, pTouches, pEvent);
 }
 
 void InGameScene::ccTouchesMoved(CCSet *pTouches, CCEvent *pEvent)
 {
+    // 적절하지 않은 데이터 판단 - 클라우드가 있으면 확장이 안된다고??
+    // 화면 확대 축소 이동
     if( !getChildByTag(THINK_CLOUD)->isVisible() )
     {
         float scale = getScale();
@@ -244,8 +261,8 @@ void InGameScene::ccTouchesEnded(CCSet *pTouches, CCEvent *pEvent)
 	istoucheDelegate = false;
     CCTouch *touch = static_cast<CCTouch*>(pTouches->anyObject());
 
-	pData->setPointedAnimal( accountKey, -1 );
-	pUI->TouchesEnded(this, pTouches, pEvent);
+    pUI->TouchesEnded(this, pTouches, pEvent);
+	pData->setPointedAnimal( ANIMALINDEX(-1, -1) );
 }
 
 bool InGameScene::initTerrain(const char *filename, cocos2d::CCSize winSize)
@@ -255,12 +272,30 @@ bool InGameScene::initTerrain(const char *filename, cocos2d::CCSize winSize)
 	
 	if( !pTerrain ) return false;
 
-	pTerrain->setScaleX(GAME_SCALE*WINSIZE_X/sizeTerrain.width);
-	pTerrain->setScaleY(GAME_SCALE*WINSIZE_X/sizeTerrain.width);
+	pTerrain->setScaleX(2*GAME_SCALE*WINSIZE_X/sizeTerrain.width);
+	pTerrain->setScaleY(2*GAME_SCALE*WINSIZE_X/sizeTerrain.width);
 	pTerrain->setAnchorPoint(ccp(0.5f, 0.5f));
-	pTerrain->setPosition(ccp(WINSIZE_X/2, winSize.height/2));
+	pTerrain->setPosition(ccp(WINSIZE_X/2, 0));
 	this->addChild(pTerrain, 0.5);
 
+	return true;
+}
+
+bool InGameScene::initBackground(CCLayer* pLayer, const char *filename, cocos2d::CCSize winSize)
+{
+	CCSprite*	pBackground		= CCSprite::create(filename);
+    CCSize		sizeBackground	= pBackground->getContentSize();
+    
+	if( !pBackground ) return false;
+    
+    //	pBackground->setScaleX(GAME_SCALE*WINSIZE_X/sizeBackground.width);
+    //	pBackground->setScaleY(GAME_SCALE*WINSIZE_Y/sizeBackground.height);
+    pBackground->setScaleX(GAME_SCALE*WINSIZE_X/sizeBackground.width);
+	pBackground->setScaleY(GAME_SCALE*WINSIZE_Y/sizeBackground.height);
+	pBackground->setPosition(ccp(WINSIZE_X/2, WINSIZE_Y/2));
+    
+	pLayer->addChild(pBackground, 0 );
+    
 	return true;
 }
 
@@ -306,10 +341,13 @@ void InGameScene::onHttpRequestCompleted(cocos2d::CCNode *sender, void *data)
     // dump data
     std::vector<char> *buffer = response->getResponseData();
 	std::string s = "";
-    printf("Http Test, dump data: ");
+    bool isDataStarted = false;
     for (unsigned int i = 0; i < buffer->size(); i++)
-    {
-        CCLog("%c", (*buffer)[i]);
+	{
+        if( isDataStarted == false && !isspace((*buffer)[i]) )
+            isDataStarted = true;
+        if( isDataStarted == false) continue;
+        
 		s += (*buffer)[i];
     }
 	CCLog("%s", s.data() );
@@ -320,6 +358,38 @@ void InGameScene::onHttpRequestCompleted(cocos2d::CCNode *sender, void *data)
         string szAnimalKey = s;
         CCLog("InGameScene::onHttpRequestCompleted-%s : %s", response->getHttpRequest()->getTag(), szAnimalKey.data() );
     }
+}
+
+void InGameScene::resetScene(int newHostAccountKey)
+{
+    hostAccountKey = newHostAccountKey;
+    CCLog("InGameScene::resetScene : 0 %d", newHostAccountKey);
+    
+    if( SceneManager::sharedSceneManager()->isFriendHome() )
+    {
+        CCLog("InGameScene::resetScene : 1");
+        pUILayer->getChildByTag(BTN_FRIENDS)->setVisible(false);
+        pUILayer->getChildByTag(BTN_MULTI_PRACTICE)->setVisible(false);
+        pUILayer->getChildByTag(BTN_CREATE_ANIMAL)->setVisible(false);
+        pUILayer->getChildByTag(BTN_GO_HOME)->setVisible(true);
+        getChildByTag(ICON_BLACKBOARD)->setVisible(false);
+        pData->addChildToLayer(this, hostAccountKey);
+        CCLog("InGameScene::resetScene : 2");
+    }
+    else
+    {
+        CCLog("InGameScene::resetScene : 3");
+        pUILayer->getChildByTag(BTN_FRIENDS)->setVisible(true);
+        pUILayer->getChildByTag(BTN_MULTI_PRACTICE)->setVisible(true);
+        pUILayer->getChildByTag(BTN_CREATE_ANIMAL)->setVisible(true);
+        pUILayer->getChildByTag(BTN_GO_HOME)->setVisible(false);
+        CCLog("InGameScene::resetScene : 4");
+    }
+}
+
+CCScene* InGameScene::getInGameScene()
+{
+    return pScene;
 }
 
 bool InGameScene::onTextFieldAttachWithIME(CCTextFieldTTF* sender)
@@ -495,7 +565,7 @@ void InGameScene::callbackOnVoiceRecognitionResult(CCObject* paramObj) {
         //question mark
         pUI->setQuestion(this, who);
     } else {
-        pData->getAnimalByAnimalKey(accountKey, who)->doAction(action, true);
+        pData->getAnimalByAnimalKey(ANIMALINDEX(hostAccountKey, who))->doAction(action, true);
     }
 }
 

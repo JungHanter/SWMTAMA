@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5617338D1658437200CDB4EF /* FriendScene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5617338B1658437100CDB4EF /* FriendScene.cpp */; };
 		D810022F164ABF8400640E7E /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D810022E164ABF8400640E7E /* QuartzCore.framework */; };
 		D8100231164ABF8400640E7E /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D8100230164ABF8400640E7E /* OpenGLES.framework */; };
 		D8100233164ABF8400640E7E /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D8100232164ABF8400640E7E /* OpenAL.framework */; };
@@ -243,6 +244,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		5617338B1658437100CDB4EF /* FriendScene.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FriendScene.cpp; path = Classes/FriendScene.cpp; sourceTree = "<group>"; };
+		5617338C1658437200CDB4EF /* FriendScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FriendScene.h; path = Classes/FriendScene.h; sourceTree = "<group>"; };
 		D810022A164ABF8400640E7E /* SWMTAMA.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SWMTAMA.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D810022E164ABF8400640E7E /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		D8100230164ABF8400640E7E /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
@@ -1604,6 +1607,8 @@
 				D81005B9164ADF5800640E7E /* UIManager.h */,
 				D81004A7164ABF8700640E7E /* AppDelegate.h */,
 				D81004A8164ABF8700640E7E /* AppDelegate.cpp */,
+				5617338B1658437100CDB4EF /* FriendScene.cpp */,
+				5617338C1658437200CDB4EF /* FriendScene.h */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -1893,6 +1898,7 @@
 				D81005C8164ADF5900640E7E /* Squirrel.cpp in Sources */,
 				D81005C9164ADF5900640E7E /* UIManager.cpp in Sources */,
 				D81005CE164AE48E00640E7E /* Parameters.cpp in Sources */,
+				5617338D1658437200CDB4EF /* FriendScene.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

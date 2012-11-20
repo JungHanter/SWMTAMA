@@ -16,6 +16,7 @@ LOCAL_SRC_FILES := hellocpp/main.cpp \
                    ../../Classes/Lion.cpp \
                    ../../Classes/LoadingScene.cpp \
                    ../../Classes/LoginScene.cpp \
+		   ../../Classes/FriendScene.cpp \
                    ../../Classes/Monkey.cpp \
                    ../../Classes/NetworkManager.cpp \
                    ../../Classes/Parameters.cpp \

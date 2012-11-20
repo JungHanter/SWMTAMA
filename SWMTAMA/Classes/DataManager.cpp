@@ -1,4 +1,5 @@
 #include "DataManager.h"
+#include "SceneManager.h"
 
 DataManager* DataManager::create()
 {
@@ -7,7 +8,8 @@ DataManager* DataManager::create()
 
 DataManager::DataManager()
 {
-	pointedAnimalKey = -1;
+	pointedAnimalKey.accountKey = -1;
+	pointedAnimalKey.animalKey = -1;
 	lastPointedAnimalKey = pointedAnimalKey;
 }
 
@@ -28,21 +30,31 @@ void DataManager::release()
 void DataManager::frame(CCLayer *pLayer, float dt)
 {
     setZOrders(pLayer, dt);
-    int accountKey = 0;
-    map<int, Animal*> *animals = getAnimalsByAccount(accountKey);
-    if( animals == NULL ) return;
-    for( map<int, Animal*>::iterator animalIter = animals->begin();
-        animalIter != animals->end(); animalIter++ )
-    {
-        animalIter->second->frame(dt);
-    }
+    for( map<int, map<int, Animal*>*>::iterator accountIter = AnimalData.begin();
+		accountIter != AnimalData.end(); accountIter++ )
+	{
+        for( map<int, Animal*>::iterator animalIter = accountIter->second->begin();
+			animalIter != accountIter->second->end(); animalIter++ )
+		{
+			if( accountIter->first != SceneManager::sharedSceneManager()->getHostAccountKey() )
+			{
+                animalIter->second->getSprite()->setVisible(false);
+            }
+            else
+            {
+                animalIter->second->getSprite()->setVisible(true);
+                animalIter->second->frame(dt);
+            }
+            
+		}
+	}
 }
 
-Animal* DataManager::getAnimalByAnimalKey(int accountKey, int animalKey)
+Animal* DataManager::getAnimalByAnimalKey(ANIMALINDEX index)
 {
-	if( AnimalData.find(accountKey) == AnimalData.end() ) return NULL;
-	if( AnimalData[accountKey]->find(animalKey) == AnimalData[accountKey]->end() ) return NULL;
-	return (*AnimalData[accountKey])[animalKey];
+	if( AnimalData.find(index.accountKey) == AnimalData.end() ) return NULL;
+	if( AnimalData[index.accountKey]->find(index.animalKey) == AnimalData[index.accountKey]->end() ) return NULL;
+	return (*AnimalData[index.accountKey])[index.animalKey];
 }
 
 map<int, Animal*>* DataManager::getAnimalsByAccount(int accountKey)
@@ -71,47 +83,49 @@ void DataManager::makeDataFromAnimalInfo(int accountKey, ANIMALINFO animalInfo)
 		case MONKEY:
 			(*pAnimalList)[animalInfo.key] = new Monkey(animalInfo);
 			break;
-		//case SQUIRREL:
-		//	(*pAnimalList)[animalInfo.key] = new Squirrel(animalInfo);
-		//	break;
+		case SQUIRREL:
+			(*pAnimalList)[animalInfo.key] = new Squirrel(animalInfo);
+			break;
 		}
 	}
 }
 
-void DataManager::setPointedAnimal(int accountKey, int animalKey)
+void DataManager::setPointedAnimal(ANIMALINDEX index)
 {
-	if( animalKey != -1 )
-		lastPointedAnimalKey = animalKey;
-	pointedAnimalKey = animalKey;
+	if( index.animalKey != -1 )
+    {
+        lastPointedAnimalKey.accountKey = index.accountKey;
+		lastPointedAnimalKey.animalKey = index.animalKey;
+	}
+    pointedAnimalKey.accountKey = index.accountKey;
+    pointedAnimalKey.animalKey = index.animalKey;
 }
 
-int DataManager::getPointedAnimal(int accountKey)
+ANIMALINDEX DataManager::getPointedAnimal()
 {
 	return pointedAnimalKey;
 }
 
-int DataManager::getLastPointedAnimal(int accountKey)
+ANIMALINDEX DataManager::getLastPointedAnimal()
 {
 	return lastPointedAnimalKey;
 }
 
-int DataManager::findAnimalRectContainsPoint(int accountKey, CCPoint touch)
+ANIMALINDEX DataManager::findAnimalRectContainsPoint(CCPoint touch)
 {
-	if( AnimalData.find(accountKey) == AnimalData.end() ) return -1;
-	//if( lastPointedAnimalKey != -1 ) return lastPointedAnimalKey;
 	for( map<int, map<int, Animal*>*>::iterator accountIter = AnimalData.begin();
 		accountIter != AnimalData.end(); accountIter++ )
 	{
 		for( map<int, Animal*>::iterator animalIter = accountIter->second->begin();
 			animalIter != accountIter->second->end(); animalIter++ )
 		{
-			if( CCRect::CCRectContainsPoint( animalIter->second->getSprite()->boundingBox(), touch ) )
+			if( animalIter->second->getSprite()->isVisible() && CCRect::CCRectContainsPoint( animalIter->second->getSprite()->boundingBox(), touch ) )
 			{
-				return animalIter->first;
+				return ANIMALINDEX(accountIter->first, animalIter->first);
 			}
 		}
 	}
-	return -1;
+	return ANIMALINDEX(-1,-1);
 }
 
 void DataManager::setZOrders(cocos2d::CCLayer *pLayer, float dt)
@@ -134,4 +148,40 @@ int DataManager::getNewAnimalKey(int accountKey)
     if( AnimalData.find(accountKey) == AnimalData.end() ) return -1;
     return AnimalData[accountKey]->size() + 1;
 }
+
+void DataManager::addChildToLayer(cocos2d::CCLayer *pLayer, int _hostAccountKey)
+{
+    if( AnimalData.find(_hostAccountKey) == AnimalData.end() )
+		AnimalData[_hostAccountKey] = new map<int, Animal*>;
+    srand(time(NULL));
+	map<int, Animal*>* pAnimalList = AnimalData[_hostAccountKey];
+    for( map<int, Animal*>::iterator animalIter = pAnimalList->begin(); animalIter != pAnimalList->end(); animalIter++ )
+    {
+        CCPoint point;
+        pLayer->addChild(animalIter->second->getSprite());
+    }
+}
+
+void DataManager::addFriend(int accountKey, string ID)
+{
+    bool isAlreadyExist = false;
+    for (vector< pair<int, string> >::iterator iter = userFriendList.begin(); iter != userFriendList.end(); iter++)
+        if( iter->first == accountKey )
+            isAlreadyExist = true;
+    
+    if( !isAlreadyExist )
+        userFriendList.push_back(make_pair(accountKey, ID));
+}
+
+void DataManager::deleteFriend()
+{
+    userFriendList.clear();
+}
+
+vector< pair<int, string> >* DataManager::getFriendList()
+{
+    return &userFriendList;
+}
+
+
 

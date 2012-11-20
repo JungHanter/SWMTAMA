@@ -4,6 +4,7 @@
 #include "SimpleAudioEngine.h"
 #include "InGameScene.h"
 #include "LoginScene.h"
+#include "SceneManager.h"
 
 using namespace CocosDenshion;
 
@@ -20,6 +21,8 @@ AppDelegate::~AppDelegate()
 
 bool AppDelegate::applicationDidFinishLaunching()
 {
+    srand((unsigned int)time(NULL));
+
     // initialize director
     CCDirector *pDirector = CCDirector::sharedDirector();
     pDirector->setOpenGLView(CCEGLView::sharedOpenGLView());
@@ -29,15 +32,21 @@ bool AppDelegate::applicationDidFinishLaunching()
 //    pDirector->enableRetinaDisplay(true);
 
     // turn on display FPS
+#ifndef GAME_DEBUGGER
+    pDirector->setDisplayStats(false);
+#else
     pDirector->setDisplayStats(true);
+#endif
 
     // set FPS. the default value is 1.0/60 if you don't call this
     pDirector->setAnimationInterval(1.0 / 60);
 
     // create a scene. it's an autorelease object
     
-    CCScene *pScene = InGameScene::scene();
-    //CCScene *pScene = LoginScene::scene();
+    SceneManager::create();
+    
+    //CCScene *pScene = InGameScene::scene();
+    CCScene *pScene = LoginScene::scene();
 
     // run
     pDirector->runWithScene(pScene);

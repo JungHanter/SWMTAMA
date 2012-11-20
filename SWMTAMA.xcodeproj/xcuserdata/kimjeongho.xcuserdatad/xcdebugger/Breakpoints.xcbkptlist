@@ -13,7 +13,7 @@
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "207"
          endingLineNumber = "207"
-         landmarkName = "Animal::getDefaultMotion(int action)"
+         landmarkName = "Animal::addMotion(MOTIONPACK pack, bool cleanQueue)"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
@@ -25,8 +25,19 @@
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "3"
-         endingLineNumber = "3"
-         landmarkName = "Animal::Animal(ANIMALINFO _animalInfo)"
+         endingLineNumber = "3">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "SWMTAMA/Classes/Squirrel.cpp"
+         timestampString = "374929130.093354"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "6"
+         endingLineNumber = "6"
+         landmarkName = "Squirrel::Squirrel(ANIMALINFO animalInfo)"
          landmarkType = "5">
       </FileBreakpoint>
    </FileBreakpoints>

@@ -48,8 +48,8 @@ bool BasisScene::initBackground(CCLayer* pLayer, const char *filename, cocos2d::
     
 //	pBackground->setScaleX(GAME_SCALE*WINSIZE_X/sizeBackground.width);
 //	pBackground->setScaleY(GAME_SCALE*WINSIZE_Y/sizeBackground.height);
-    pBackground->setScaleX(GAME_SCALE*WINSIZE_X/sizeBackground.width);
-	pBackground->setScaleY(GAME_SCALE*WINSIZE_Y/sizeBackground.height);
+    pBackground->setScaleX(WINSIZE_X/sizeBackground.width);
+	pBackground->setScaleY(WINSIZE_Y/sizeBackground.height);
 	pBackground->setPosition(ccp(WINSIZE_X/2, WINSIZE_Y/2));
     
 	pLayer->addChild(pBackground, 0 );
