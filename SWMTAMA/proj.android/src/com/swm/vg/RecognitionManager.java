@@ -396,7 +396,7 @@ public class RecognitionManager {
 
 		@Override
 		public void onError(int error) {
-			showErrorMessage(error);
+//			showErrorMessage(error);
 //			callbackOnRecognitionIdle();
 			callbackHandler.sendMessage(Message.obtain(callbackHandler, CALLBACK_RECOG_IDLE));
 		}
@@ -507,6 +507,6 @@ public class RecognitionManager {
 			break;
 		}
 		
-		Toast.makeText(parent, msg, Toast.LENGTH_SHORT).show();
+//		Toast.makeText(parent, msg, Toast.LENGTH_SHORT).show();
 	}
 }
